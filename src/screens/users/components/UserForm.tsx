@@ -22,8 +22,7 @@ const UserForm: React.FC<UserFormProps> = ({
   const { createUserRequest, editUserRequest } = useSelector(
     (state: RootState) => state.users
   )
-  console.log('crear', createUserRequest)
-  console.log('editar', editUserRequest)
+
   const [email, setEmail] = useState(editingUser?.email || '')
   const [password, setPassword] = useState('')
   const [firstName, setFirstName] = useState(editingUser?.firstName || '')
