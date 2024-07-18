@@ -26,42 +26,14 @@ const initialState: UsersState = {
   fetchUserRequest: { inProgress: false, messages: '', ok: false },
 }
 
-// Asynchronous thunk to create a new user
 export const createUser = createAsyncThunk(
   'users/createUser',
   async (
-    {
-      email,
-      password,
-      firstName,
-      lastName,
-      document,
-      phone,
-      phone2,
-      address,
-      cp,
-      province,
-      city,
-      role,
-      active,
-    }: {
-      email: string
-      password: string
-      firstName: string
-      lastName: string
-      document: string
-      phone: number
-      phone2: number
-      address: string
-      cp: number
-      province: string
-      city: string
-      role: string
-      active: boolean
-    },
+    newUser: Omit<User, 'id' | 'uid' | 'createdAt' | 'updatedAt'>,
     { rejectWithValue }
   ) => {
     try {
+      const { email, password } = newUser
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -70,108 +42,45 @@ export const createUser = createAsyncThunk(
       const user = userCredential.user
       const timestamp = Timestamp.now()
 
-      const newUser = {
+      const completeUser: User = {
+        ...newUser,
         uid: user.uid,
-        email: user.email!,
-        firstName,
-        lastName,
-        document,
-        phone,
-        phone2,
-        address,
-        cp,
-        province,
-        city,
-        role,
-        active,
         createdAt: timestamp.toDate().toISOString(),
         updatedAt: timestamp.toDate().toISOString(),
       }
 
-      await setDoc(doc(db, 'users', user.uid), newUser)
-
-      return { id: user.uid, ...newUser }
+      await setDoc(doc(db, 'users', user.uid), completeUser)
+      return { id: user.uid, ...completeUser }
     } catch (error) {
-      const err = error as Error
-      return rejectWithValue(err.message)
+      return rejectWithValue((error as Error).message)
     }
   }
 )
 
-// Asynchronous thunk to edit a user
 export const editUser = createAsyncThunk(
   'users/editUser',
-  async (
-    {
-      id,
-      email,
-      firstName,
-      lastName,
-      document,
-      phone,
-      phone2,
-      address,
-      cp,
-      province,
-      city,
-      role,
-      active,
-    }: {
-      id: string
-      email: string
-      firstName: string
-      lastName: string
-      document: string
-      phone: number
-      phone2: number
-      address: string
-      cp: number
-      province: string
-      city: string
-      role: string
-      active: boolean
-    },
-    { rejectWithValue }
-  ) => {
+  async (updatedUser: User, { rejectWithValue }) => {
     try {
+      const { id } = updatedUser
+      if (!id) throw new Error('User ID is required')
       const userDoc = await getDoc(doc(db, 'users', id))
       const existingUserData = userDoc.data()
 
-      const updatedUser = {
-        ...existingUserData,
-        email,
-        firstName,
-        lastName,
-        document,
-        phone,
-        phone2,
-        address,
-        cp,
-        province,
-        city,
-        role,
-        active,
+      const mergedUser: User = {
+        ...(existingUserData as User),
+        ...updatedUser,
         updatedAt: Timestamp.now().toDate().toISOString(),
       }
 
-      await updateDoc(doc(db, 'users', id), updatedUser)
+      await updateDoc(doc(db, 'users', id), mergedUser as any)
 
-      return {
-        id,
-        ...updatedUser,
-        createdAt: existingUserData?.createdAt?.toDate
-          ? existingUserData.createdAt.toDate().toISOString()
-          : existingUserData?.createdAt,
-        updatedAt: updatedUser.updatedAt,
-      }
+      return { id, ...mergedUser }
     } catch (error) {
-      const err = error as Error
-      return rejectWithValue(err.message)
+      return rejectWithValue((error as Error).message)
     }
   }
 )
 
-// Asynchronous thunk to fetch all users
 export const fetchUsers = createAsyncThunk(
   'users/fetchUsers',
   async (_, { rejectWithValue }) => {

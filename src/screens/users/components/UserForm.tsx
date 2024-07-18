@@ -22,6 +22,8 @@ const UserForm: React.FC<UserFormProps> = ({
   const { createUserRequest, editUserRequest } = useSelector(
     (state: RootState) => state.users
   )
+  console.log('crear', createUserRequest)
+  console.log('editar', editUserRequest)
   const [email, setEmail] = useState(editingUser?.email || '')
   const [password, setPassword] = useState('')
   const [firstName, setFirstName] = useState(editingUser?.firstName || '')
@@ -42,6 +44,7 @@ const UserForm: React.FC<UserFormProps> = ({
     e.preventDefault()
     const user = {
       email,
+      password,
       firstName,
       lastName,
       phone: Number(phone),
@@ -57,7 +60,7 @@ const UserForm: React.FC<UserFormProps> = ({
     if (editingUser) {
       onSubmit({ ...user, id: editingUser.id })
     } else {
-      onSubmit({ ...user, password })
+      onSubmit(user)
     }
   }
 

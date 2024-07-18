@@ -19,8 +19,6 @@ const Users: React.FC = () => {
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
 
-  console.log(import.meta.env.VITE_API_KEY)
-
   useEffect(() => {
     dispatch(fetchUsers())
   }, [dispatch])
