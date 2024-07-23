@@ -37,15 +37,18 @@ export interface InventoryItem {
   description: string
   price: number
   units: number
+  block: number
+  breakageFee?: number
   images?: string[]
+  files?: string[]
+  documents?: string[]
+  filesDocuments?: string[]
 }
 
-export interface Category {
+export interface CategoryItem {
   id: string
+  createdAt: string
+  updatedAt: string
   categoryName: string
-}
-
-export interface Subcategory {
-  id: string
-  subcategoryName: string
+  subcategoryName?: string
 }

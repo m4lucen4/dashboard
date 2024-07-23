@@ -12,6 +12,7 @@ const navigation = [
   { name: 'Usuarios', href: '/users', current: false },
   { name: 'Inventario', href: '/inventory', current: false },
   { name: 'Tienda', href: '/shop', current: false },
+  { name: 'Categorías', href: '/categories', current: false },
 ]
 
 function classNames(...classes: string[]) {

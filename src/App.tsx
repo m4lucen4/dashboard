@@ -13,6 +13,7 @@ import Inventory from './screens/inventory/Inventory'
 import ProtectedRoute from './helpers/ProtectedRoutes'
 import Layout from './components/Layout'
 import Shop from './screens/shop/Shop'
+import Category from './screens/categories/Category'
 
 const App: React.FC = () => {
   return (
@@ -55,6 +56,16 @@ const App: React.FC = () => {
             <ProtectedRoute>
               <Layout>
                 <Inventory />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/categories"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Category />
               </Layout>
             </ProtectedRoute>
           }

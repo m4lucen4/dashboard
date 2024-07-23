@@ -13,6 +13,7 @@ import storage from 'redux-persist/lib/storage'
 import authReducer from './slices/authSlice'
 import usersReducer from './slices/usersSlice'
 import inventoryReducer from './slices/inventorySlice'
+import categoryReducer from './slices/categoriesSlice'
 import settingsReducer from './slices/settingsSlice'
 
 // Persist configuration for auth reducer
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
   auth: persistedAuthReducer,
   users: usersReducer,
   inventory: inventoryReducer,
+  category: categoryReducer,
   settings: settingsReducer,
 })
 
