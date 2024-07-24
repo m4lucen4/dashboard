@@ -31,25 +31,11 @@ const Inventory: React.FC = () => {
     dispatch(fetchInventory())
   }, [dispatch])
 
-  const handleCreateItem = (item: {
-    title: string
-    description: string
-    price: number
-    units: number
-    images: string[]
-  }) => {
+  const handleCreateItem = (item: InventoryItem) => {
     dispatch(addInventoryItem(item))
   }
 
-  const handleEditItem = (item: {
-    id: string
-    title: string
-    description: string
-    price: number
-    units: number
-    images: string[]
-    newImages: File[]
-  }) => {
+  const handleEditItem = (item: InventoryItem) => {
     dispatch(updateInventoryItem(item))
   }
 

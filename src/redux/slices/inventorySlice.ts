@@ -7,7 +7,6 @@ import {
   deleteDoc,
   doc,
 } from 'firebase/firestore'
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db } from '../../firebase'
 import { InventoryItem, IRequest } from '../../types'
 
@@ -27,72 +26,53 @@ const initialState: InventoryState = {
   deleteInventoryItemRequest: { inProgress: false, messages: '', ok: false },
 }
 
-// Helper function to upload image to Firebase Storage
-const uploadImage = async (file: File): Promise<string> => {
-  try {
-    const storage = getStorage()
-    const storageRef = ref(storage, `images/${file.name}_${Date.now()}`)
-    await uploadBytes(storageRef, file)
-    const url = await getDownloadURL(storageRef)
-    return url
-  } catch (error) {
-    console.error('Error uploading image:', error)
-    throw error
-  }
-}
-
-// #region Async thunks for CRUD operations
+// #region Async thunks for CRUD operations on Categories
 export const fetchInventory = createAsyncThunk(
   'inventory/fetchInventory',
   async () => {
     const querySnapshot = await getDocs(collection(db, 'inventory'))
     return querySnapshot.docs.map((doc) => ({
-      ...doc.data(),
       id: doc.id,
+      ...doc.data(),
     })) as InventoryItem[]
   }
 )
 
 export const addInventoryItem = createAsyncThunk(
   'inventory/addInventoryItem',
-  async (newItem: Omit<InventoryItem, 'id'> & { newImages?: File[] }) => {
-    try {
-      const imageUrls = await Promise.all(
-        newItem.newImages?.map(uploadImage) || []
-      )
-
-      const itemWithoutFiles = { ...newItem, images: imageUrls }
-      delete itemWithoutFiles.newImages
-
-      const docRef = await addDoc(collection(db, 'inventory'), itemWithoutFiles)
-
-      return { ...itemWithoutFiles, id: docRef.id }
-    } catch (error) {
-      console.error('Error adding inventory item:', error)
-      throw error
+  async (item: Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const timestamp = new Date().toISOString()
+    const docRef = await addDoc(collection(db, 'inventory'), {
+      ...item,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    })
+    return {
+      id: docRef.id,
+      ...item,
+      createdAt: timestamp,
+      updatedAt: timestamp,
     }
   }
 )
 
 export const updateInventoryItem = createAsyncThunk(
   'inventory/updateInventoryItem',
-  async (updatedItem: InventoryItem & { newImages: File[] }) => {
-    const { id, newImages, ...itemData } = updatedItem
-    const existingImages = itemData.images || []
-    const newImageUrls = await Promise.all(newImages.map(uploadImage))
-    const updatedImages = [...existingImages, ...newImageUrls]
-
-    const itemDoc = doc(db, 'inventory', id)
-    await updateDoc(itemDoc, { ...itemData, images: updatedImages })
-    return { ...updatedItem, images: updatedImages }
+  async (item: InventoryItem) => {
+    const { id, ...data } = item
+    const timestamp = new Date().toISOString()
+    await updateDoc(doc(db, 'inventory', id), {
+      ...data,
+      updatedAt: timestamp,
+    })
+    return { ...item, updatedAt: timestamp }
   }
 )
 
 export const deleteInventoryItem = createAsyncThunk(
   'inventory/deleteInventoryItem',
   async (id: string) => {
-    const itemDoc = doc(db, 'inventory', id)
-    await deleteDoc(itemDoc)
+    await deleteDoc(doc(db, 'inventory', id))
     return id
   }
 )
@@ -144,7 +124,7 @@ const inventorySlice = createSlice({
           ok: false,
         }
       })
-      // #region ADD INVENTORY ITEM
+      // #region ADD CATEGORY
       .addCase(addInventoryItem.pending, (state) => {
         state.addInventoryItemRequest = {
           inProgress: true,
@@ -170,7 +150,7 @@ const inventorySlice = createSlice({
           ok: false,
         }
       })
-      // #region UPDATE INVENTORY ITEM
+      // #region UPDATE CATEGORY
       .addCase(updateInventoryItem.pending, (state) => {
         state.updateInventoryItemRequest = {
           inProgress: true,
@@ -201,7 +181,7 @@ const inventorySlice = createSlice({
           ok: false,
         }
       })
-      // #region DELETE INVENTORY ITEM
+      // #region DELETE CATEGORY
       .addCase(deleteInventoryItem.pending, (state) => {
         state.deleteInventoryItemRequest = {
           inProgress: true,

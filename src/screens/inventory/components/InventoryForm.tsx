@@ -5,25 +5,12 @@ import {
   resetAddInventoryItemRequest,
   resetUpdateInventoryItemRequest,
 } from '../../../redux/slices/inventorySlice'
+import ActionButtonsForm from '../../../components/ActionButtonsForm/ActionButtonsForm'
+import { InventoryItem } from '../../../types'
 
 type InventoryFormProps = {
-  onSubmit: (item: {
-    id?: string
-    title: string
-    description: string
-    price: string
-    units: string
-    newImages: File[]
-    images: string[]
-  }) => void
-  editingItem?: {
-    id: string
-    title: string
-    description: string
-    price: string
-    units: string
-    images: string[]
-  } | null
+  onSubmit: (item: InventoryItem) => void
+  editingItem?: InventoryItem | null
   onClose: () => void
 }
 
@@ -38,236 +25,199 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
   )
   const [title, setTitle] = useState(editingItem?.title || '')
   const [description, setDescription] = useState(editingItem?.description || '')
-  const [price, setPrice] = useState(editingItem?.price || '')
-  const [units, setUnits] = useState(editingItem ? editingItem.units : '')
-  const [newImages, setNewImages] = useState<File[]>([])
-  const [existingImages, setExistingImages] = useState<string[]>(
-    editingItem?.images || []
+  const [price, setPrice] = useState(editingItem?.price || 0)
+  const [units, setUnits] = useState(editingItem ? editingItem.units : 0)
+  const [breakageFee, setBreakageFee] = useState(
+    editingItem ? editingItem.breakageFee : 0
   )
+  const [block, setBlock] = useState(editingItem ? editingItem.block : 0)
 
   const formRef = useRef<HTMLFormElement>(null)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const item = {
-      title,
-      description,
-      price,
-      newImages,
-      images: existingImages,
-      units,
-    }
+    const timestamp = new Date().toISOString()
+
     if (editingItem) {
-      onSubmit({ ...item, id: editingItem.id })
+      const updatedItem: InventoryItem = {
+        ...editingItem,
+        title,
+        description,
+        price,
+        units,
+        breakageFee,
+        block,
+        updatedAt: timestamp,
+      }
+      onSubmit(updatedItem)
     } else {
-      onSubmit(item)
+      const newItem: Omit<InventoryItem, 'id'> = {
+        title,
+        description,
+        price,
+        units,
+        breakageFee,
+        block,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      }
+      onSubmit(newItem as InventoryItem)
     }
   }
+
   useEffect(() => {
-    if (addInventoryItemRequest.ok) {
+    if (addInventoryItemRequest.ok || updateInventoryItemRequest.ok) {
       setTitle('')
       setDescription('')
-      setPrice('')
-      setNewImages([])
-      setExistingImages([])
+      setPrice(0)
+      setBreakageFee(0)
+      setUnits(0)
+      setBlock(0)
       onClose()
       dispatch(resetAddInventoryItemRequest())
-    }
-  }, [addInventoryItemRequest.ok, dispatch, onClose])
-
-  useEffect(() => {
-    if (updateInventoryItemRequest.ok) {
-      setTitle('')
-      setDescription('')
-      setPrice('')
-      setNewImages([])
-      setExistingImages([])
-      onClose()
       dispatch(resetUpdateInventoryItemRequest())
     }
-  }, [updateInventoryItemRequest.ok, dispatch, onClose])
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setNewImages([...newImages, ...Array.from(e.target.files)])
-    }
-  }
-
-  const removeNewImage = (index: number) => {
-    setNewImages(newImages.filter((_, i) => i !== index))
-  }
-
-  const removeExistingImage = (index: number) => {
-    setExistingImages(existingImages.filter((_, i) => i !== index))
-  }
+  }, [
+    addInventoryItemRequest.ok,
+    updateInventoryItemRequest.ok,
+    dispatch,
+    onClose,
+  ])
 
   return (
     <form ref={formRef} onSubmit={handleSubmit}>
-      <div className="space-y-12">
-        <div className="border-b border-gray-900/10 pb-12">
-          <p className="mt-1 text-sm leading-6 text-gray-600">
-            Complete the information to add or edit an inventory item.
-          </p>
-          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="sm:col-span-6">
-              <label
-                htmlFor="title"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Nombre
-              </label>
-              <div className="mt-2">
-                <input
-                  id="title"
-                  name="title"
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div className="sm:col-span-6">
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Descripción
-              </label>
-              <div className="mt-2">
-                <textarea
-                  id="description"
-                  name="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div className="sm:col-span-6">
-              <label
-                htmlFor="price"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Precio
-              </label>
-              <div className="mt-2">
-                <input
-                  id="price"
-                  name="price"
-                  type="number"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div className="sm:col-span-6">
-              <label
-                htmlFor="units"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Unidades
-              </label>
-              <div className="mt-2">
-                <input
-                  id="units"
-                  name="units"
-                  type="number"
-                  value={units}
-                  onChange={(e) => setUnits(e.target.value)}
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div className="sm:col-span-6">
-              <label
-                htmlFor="existing-images"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Imágenes existentes
-              </label>
-              <div className="mt-2 flex flex-wrap gap-4">
-                {existingImages.map((image, index) => (
-                  <div key={index} className="relative">
-                    <img
-                      src={image}
-                      alt={`Existing Preview ${index}`}
-                      className="h-24 w-24 rounded-md object-cover"
+      <div className="grid grid-cols-2 gap-4">
+        {/* First column */}
+        <div className="col-span-1 p-4">
+          <div className="space-y-12">
+            <div className="pb-12">
+              <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                <div className="sm:col-span-6">
+                  <label
+                    htmlFor="title"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Nombre
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      id="title"
+                      name="title"
+                      type="text"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      required
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
-                    <button
-                      type="button"
-                      onClick={() => removeExistingImage(index)}
-                      className="absolute right-0 top-0 rounded-full bg-red-600 p-1 text-white"
-                    >
-                      &times;
-                    </button>
                   </div>
-                ))}
-              </div>
-            </div>
+                </div>
 
-            <div className="sm:col-span-6">
-              <label
-                htmlFor="new-images"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Nuevas imágenes
-              </label>
-              <input
-                id="new-images"
-                name="new-images"
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageChange}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-              <div className="mt-2 flex flex-wrap gap-4">
-                {newImages.map((image, index) => (
-                  <div key={index} className="relative">
-                    <img
-                      src={URL.createObjectURL(image)}
-                      alt={`New Preview ${index}`}
-                      className="h-24 w-24 rounded-md object-cover"
+                <div className="sm:col-span-6">
+                  <label
+                    htmlFor="description"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Descripción
+                  </label>
+                  <div className="mt-2">
+                    <textarea
+                      id="description"
+                      name="description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      required
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
-                    <button
-                      type="button"
-                      onClick={() => removeNewImage(index)}
-                      className="absolute right-0 top-0 rounded-full bg-red-600 p-1 text-white"
-                    >
-                      &times;
-                    </button>
                   </div>
-                ))}
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="price"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Precio
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      id="price"
+                      name="price"
+                      type="number"
+                      value={price}
+                      onChange={(e) => setPrice(Number(e.target.value))}
+                      required
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="units"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Unidades
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      id="units"
+                      name="units"
+                      type="number"
+                      value={units}
+                      onChange={(e) => setUnits(Number(e.target.value))}
+                      required
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="price"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Coste de rotura
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      id="breakageFee"
+                      name="breakageFee"
+                      type="number"
+                      value={breakageFee}
+                      onChange={(e) => setBreakageFee(Number(e.target.value))}
+                      required
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="block"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Bloqueo
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      id="block"
+                      name="block"
+                      type="number"
+                      value={block}
+                      onChange={(e) => setBlock(Number(e.target.value))}
+                      required
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        {/* Second column */}
+        <div className="col-span-1 p-4"></div>
       </div>
-      <div className="mt-6 flex items-center justify-end gap-x-6">
-        <button
-          type="button"
-          onClick={onClose}
-          className="text-sm font-semibold leading-6 text-gray-900"
-        >
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          Guardar
-        </button>
-      </div>
+      <ActionButtonsForm onClose={onClose} />
     </form>
   )
 }

@@ -33,16 +33,18 @@ export interface User {
 
 export interface InventoryItem {
   id: string
+  createdAt: string
+  updatedAt: string
   title: string
   description: string
   price: number
   units: number
   block: number
   breakageFee?: number
-  images?: string[]
-  files?: string[]
-  documents?: string[]
-  filesDocuments?: string[]
+  // images?: string[]
+  // files?: string[]
+  // documents?: string[]
+  // filesDocuments?: string[]
 }
 
 export interface CategoryItem {
