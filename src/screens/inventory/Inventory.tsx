@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState, AppDispatch } from '../../redux/store'
 import Drawer from '../../components/Drawer/Drawer'
@@ -14,6 +14,7 @@ import { InventoryItem } from '../../types'
 import InventoryForm from './components/InventoryForm'
 import Loading from '../../components/Loading/Loading'
 import ListHeader from '../../components/ListHeader/ListHeader'
+import Modal from '../../components/Modal/Modal'
 
 const Inventory: React.FC = () => {
   const dispatch: AppDispatch = useDispatch()
@@ -26,6 +27,8 @@ const Inventory: React.FC = () => {
   } = useSelector((state: RootState) => state.inventory)
 
   const [open, setOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState<InventoryItem | null>(null)
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -61,9 +64,21 @@ const Inventory: React.FC = () => {
   }
 
   const handleDeleteItem = (item: InventoryItem) => {
-    if (item.id && item.images) {
-      dispatch(deleteInventoryItem({ id: item.id, imageUrls: item.images }))
+    setItemToDelete(item)
+    setIsModalOpen(true)
+  }
+
+  const confirmDeleteItem = () => {
+    if (itemToDelete && itemToDelete.id && itemToDelete.images) {
+      dispatch(
+        deleteInventoryItem({
+          id: itemToDelete.id,
+          imageUrls: itemToDelete.images,
+        })
+      )
     }
+    setIsModalOpen(false)
+    setItemToDelete(null)
   }
 
   const handleOpenEditForm = (item: InventoryItem) => {
@@ -76,9 +91,11 @@ const Inventory: React.FC = () => {
     setEditingItem(null)
   }
 
-  const filteredItems = items.filter((item) =>
-    item.title?.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredItems = useMemo(() => {
+    return items.filter((item) =>
+      item.title?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  }, [items, searchTerm])
 
   if (fetchInventoryRequest.inProgress) {
     return <Loading />
@@ -120,6 +137,14 @@ const Inventory: React.FC = () => {
           onClose={handleCloseDrawer}
         />
       </Drawer>
+      <Modal
+        title="Confirmar eliminación"
+        description={`¿Estás seguro de que deseas eliminar el artículo ${itemToDelete?.title}?`}
+        confirmButton="Eliminar"
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={confirmDeleteItem}
+      />
     </div>
   )
 }
