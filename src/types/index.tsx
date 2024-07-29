@@ -41,10 +41,8 @@ export interface InventoryItem {
   units: number
   block: number
   breakageFee?: number
-  // images?: string[]
-  // files?: string[]
-  // documents?: string[]
-  // filesDocuments?: string[]
+  images?: string[]
+  documentation?: string[]
 }
 
 export interface CategoryItem {

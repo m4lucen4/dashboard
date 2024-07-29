@@ -9,7 +9,11 @@ import ActionButtonsForm from '../../../components/ActionButtonsForm/ActionButto
 import { InventoryItem } from '../../../types'
 
 type InventoryFormProps = {
-  onSubmit: (item: InventoryItem) => void
+  onSubmit: (
+    item: Omit<InventoryItem, 'id'>,
+    images: File[],
+    imagesToRemove?: string[]
+  ) => void
   editingItem?: InventoryItem | null
   onClose: () => void
 }
@@ -31,8 +35,21 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
     editingItem ? editingItem.breakageFee : 0
   )
   const [block, setBlock] = useState(editingItem ? editingItem.block : 0)
-
+  const [images, setImages] = useState<File[]>([])
+  const [imageUrls, setImageUrls] = useState<string[]>(
+    editingItem?.images || []
+  )
   const formRef = useRef<HTMLFormElement>(null)
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setImages([...images, ...Array.from(e.target.files)])
+    }
+  }
+
+  const handleImageRemove = (url: string) => {
+    setImageUrls(imageUrls.filter((imageUrl) => imageUrl !== url))
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -47,9 +64,14 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
         units,
         breakageFee,
         block,
+        images: imageUrls,
         updatedAt: timestamp,
       }
-      onSubmit(updatedItem)
+      onSubmit(
+        updatedItem,
+        images,
+        imageUrls.filter((url) => !editingItem.images?.includes(url))
+      )
     } else {
       const newItem: Omit<InventoryItem, 'id'> = {
         title,
@@ -58,10 +80,11 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
         units,
         breakageFee,
         block,
+        images: imageUrls,
         createdAt: timestamp,
         updatedAt: timestamp,
       }
-      onSubmit(newItem as InventoryItem)
+      onSubmit(newItem, images)
     }
   }
 
@@ -73,6 +96,8 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
       setBreakageFee(0)
       setUnits(0)
       setBlock(0)
+      setImages([])
+      setImageUrls([])
       onClose()
       dispatch(resetAddInventoryItemRequest())
       dispatch(resetUpdateInventoryItemRequest())
@@ -215,7 +240,38 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
           </div>
         </div>
         {/* Second column */}
-        <div className="col-span-1 p-4"></div>
+        <div className="col-span-1 p-4">
+          <div className="space-y-6">
+            <label className="block text-sm font-medium leading-6 text-gray-900">
+              Imágenes
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageChange}
+              className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none"
+            />
+            <div className="grid grid-cols-3 gap-4">
+              {imageUrls.map((url, index) => (
+                <div key={index} className="relative">
+                  <img
+                    src={url}
+                    alt={`image-${index}`}
+                    className="h-50 w-50 rounded-md"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-0 top-0 rounded-full bg-red-600 p-1 text-white"
+                    onClick={() => handleImageRemove(url)}
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
       <ActionButtonsForm onClose={onClose} />
     </form>

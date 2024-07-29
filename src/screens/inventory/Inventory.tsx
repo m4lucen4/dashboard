@@ -31,12 +31,31 @@ const Inventory: React.FC = () => {
     dispatch(fetchInventory())
   }, [dispatch])
 
-  const handleCreateItem = (item: InventoryItem) => {
-    dispatch(addInventoryItem(item))
+  const handleCreateItem = (
+    item: Omit<InventoryItem, 'id'>,
+    images: File[]
+  ) => {
+    dispatch(addInventoryItem({ item, images }))
   }
 
-  const handleEditItem = (item: InventoryItem) => {
-    dispatch(updateInventoryItem(item))
+  const handleEditItem = (
+    item: InventoryItem,
+    images: File[],
+    imagesToRemove: string[]
+  ) => {
+    dispatch(updateInventoryItem({ item, newImages: images, imagesToRemove }))
+  }
+
+  const handleSubmit = (
+    item: Omit<InventoryItem, 'id'> | InventoryItem,
+    images: File[],
+    imagesToRemove: string[] = []
+  ) => {
+    if ('id' in item) {
+      handleEditItem(item as InventoryItem, images, imagesToRemove)
+    } else {
+      handleCreateItem(item as Omit<InventoryItem, 'id'>, images)
+    }
   }
 
   const handleOpenEditForm = (item: InventoryItem) => {
@@ -79,7 +98,7 @@ const Inventory: React.FC = () => {
         fullScreen={true}
       >
         <InventoryForm
-          onSubmit={editingItem ? handleEditItem : handleCreateItem}
+          onSubmit={handleSubmit}
           editingItem={editingItem}
           onClose={handleCloseDrawer}
         />

@@ -7,7 +7,13 @@ import {
   deleteDoc,
   doc,
 } from 'firebase/firestore'
-import { db } from '../../firebase'
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  deleteObject,
+} from 'firebase/storage'
+import { db, storage } from '../../firebase'
 import { InventoryItem, IRequest } from '../../types'
 
 interface InventoryState {
@@ -26,6 +32,25 @@ const initialState: InventoryState = {
   deleteInventoryItemRequest: { inProgress: false, messages: '', ok: false },
 }
 
+// Helper function to upload images to Firebase Storage
+const uploadImages = async (images: File[]): Promise<string[]> => {
+  const uploadPromises = images.map(async (image) => {
+    const storageRef = ref(storage, `inventory/${image.name}`)
+    await uploadBytes(storageRef, image)
+    return getDownloadURL(storageRef)
+  })
+  return Promise.all(uploadPromises)
+}
+
+// Helper function to delete images from Firebase Storage
+const deleteImages = async (imageUrls: string[]) => {
+  const deletePromises = imageUrls.map(async (url) => {
+    const imageRef = ref(storage, url)
+    await deleteObject(imageRef)
+  })
+  return Promise.all(deletePromises)
+}
+
 // #region Async thunks for CRUD operations on Categories
 export const fetchInventory = createAsyncThunk(
   'inventory/fetchInventory',
@@ -40,39 +65,66 @@ export const fetchInventory = createAsyncThunk(
 
 export const addInventoryItem = createAsyncThunk(
   'inventory/addInventoryItem',
-  async (item: Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt'>) => {
+  async ({
+    item,
+    images,
+  }: {
+    item: Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt' | 'images'>
+    images: File[]
+  }) => {
     const timestamp = new Date().toISOString()
+    const imageUrls = await uploadImages(images)
     const docRef = await addDoc(collection(db, 'inventory'), {
       ...item,
       createdAt: timestamp,
       updatedAt: timestamp,
+      images: imageUrls,
     })
     return {
       id: docRef.id,
       ...item,
       createdAt: timestamp,
       updatedAt: timestamp,
+      images: imageUrls,
     }
   }
 )
 
 export const updateInventoryItem = createAsyncThunk(
   'inventory/updateInventoryItem',
-  async (item: InventoryItem) => {
-    const { id, ...data } = item
+  async ({
+    item,
+    newImages,
+    imagesToRemove,
+  }: {
+    item: InventoryItem
+    newImages: File[]
+    imagesToRemove: string[]
+  }) => {
+    const { id, images, ...data } = item
     const timestamp = new Date().toISOString()
+
+    await deleteImages(imagesToRemove)
+    const newImageUrls = await uploadImages(newImages)
+    const updatedImages = [
+      ...(images || []).filter((url) => !imagesToRemove.includes(url)),
+      ...newImageUrls,
+    ]
+
     await updateDoc(doc(db, 'inventory', id), {
       ...data,
       updatedAt: timestamp,
+      images: updatedImages,
     })
-    return { ...item, updatedAt: timestamp }
+    return { ...item, updatedAt: timestamp, images: updatedImages }
   }
 )
 
 export const deleteInventoryItem = createAsyncThunk(
   'inventory/deleteInventoryItem',
-  async (id: string) => {
+  async ({ id, imageUrls }: { id: string; imageUrls: string[] }) => {
     await deleteDoc(doc(db, 'inventory', id))
+    await deleteImages(imageUrls)
     return id
   }
 )
