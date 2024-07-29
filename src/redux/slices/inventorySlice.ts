@@ -33,10 +33,23 @@ const initialState: InventoryState = {
 }
 
 // Helper function to upload images to Firebase Storage
-const uploadImages = async (images: File[]): Promise<string[]> => {
+const uploadImages = async (
+  images: File[],
+  itemId: string
+): Promise<string[]> => {
   const uploadPromises = images.map(async (image) => {
-    const storageRef = ref(storage, `inventory/${image.name}`)
+    const storageRef = ref(storage, `inventory/${itemId}/${image.name}`)
     await uploadBytes(storageRef, image)
+    return getDownloadURL(storageRef)
+  })
+  return Promise.all(uploadPromises)
+}
+
+// Helper function to upload pdfs to Firebase Storage
+const uploadPDF = async (pdfs: File[]): Promise<string[]> => {
+  const uploadPromises = pdfs.map(async (pdf) => {
+    const storageRef = ref(storage, `documentation/${pdf.name}`)
+    await uploadBytes(storageRef, pdf)
     return getDownloadURL(storageRef)
   })
   return Promise.all(uploadPromises)
@@ -73,11 +86,14 @@ export const addInventoryItem = createAsyncThunk(
     images: File[]
   }) => {
     const timestamp = new Date().toISOString()
-    const imageUrls = await uploadImages(images)
     const docRef = await addDoc(collection(db, 'inventory'), {
       ...item,
       createdAt: timestamp,
       updatedAt: timestamp,
+      images: [], // Temporalmente vacío hasta que las imágenes se suban
+    })
+    const imageUrls = await uploadImages(images, docRef.id)
+    await updateDoc(docRef, {
       images: imageUrls,
     })
     return {
@@ -105,7 +121,7 @@ export const updateInventoryItem = createAsyncThunk(
     const timestamp = new Date().toISOString()
 
     await deleteImages(imagesToRemove)
-    const newImageUrls = await uploadImages(newImages)
+    const newImageUrls = await uploadImages(newImages, id)
     const updatedImages = [
       ...(images || []).filter((url) => !imagesToRemove.includes(url)),
       ...newImageUrls,

@@ -5,6 +5,7 @@ import Drawer from '../../components/Drawer/Drawer'
 import Alert from '../../components/Alert/Alert'
 import {
   addInventoryItem,
+  deleteInventoryItem,
   fetchInventory,
   updateInventoryItem,
 } from '../../redux/slices/inventorySlice'
@@ -20,6 +21,7 @@ const Inventory: React.FC = () => {
     items,
     addInventoryItemRequest,
     updateInventoryItemRequest,
+    deleteInventoryItemRequest,
     fetchInventoryRequest,
   } = useSelector((state: RootState) => state.inventory)
 
@@ -58,6 +60,12 @@ const Inventory: React.FC = () => {
     }
   }
 
+  const handleDeleteItem = (item: InventoryItem) => {
+    if (item.id && item.images) {
+      dispatch(deleteInventoryItem({ id: item.id, imageUrls: item.images }))
+    }
+  }
+
   const handleOpenEditForm = (item: InventoryItem) => {
     setEditingItem(item)
     setOpen(true)
@@ -78,11 +86,16 @@ const Inventory: React.FC = () => {
 
   return (
     <div className="mx-auto mb-8 mt-8 max-w-7xl px-4 sm:px-6 lg:px-8">
-      {addInventoryItemRequest.messages.length > 0 && (
-        <Alert message={addInventoryItemRequest.messages} />
-      )}
-      {updateInventoryItemRequest.messages.length > 0 && (
-        <Alert message={updateInventoryItemRequest.messages} />
+      {(addInventoryItemRequest.messages.length > 0 ||
+        updateInventoryItemRequest.messages.length > 0 ||
+        deleteInventoryItemRequest.messages.length > 0) && (
+        <Alert
+          message={
+            addInventoryItemRequest.messages ||
+            updateInventoryItemRequest.messages ||
+            deleteInventoryItemRequest.messages
+          }
+        />
       )}
       <ListHeader
         title="Inventario"
@@ -90,7 +103,11 @@ const Inventory: React.FC = () => {
         onOpen={() => setOpen(true)}
         onSearch={setSearchTerm}
       />
-      <InventoryList items={filteredItems} onEdit={handleOpenEditForm} />
+      <InventoryList
+        items={filteredItems}
+        onEdit={handleOpenEditForm}
+        onDelete={handleDeleteItem}
+      />
       <Drawer
         open={open}
         title={editingItem ? 'Editar artículo' : 'Añadir artículo'}
