@@ -38,28 +38,47 @@ const Inventory: React.FC = () => {
 
   const handleCreateItem = (
     item: Omit<InventoryItem, 'id'>,
-    images: File[]
+    images: File[],
+    pdfs: File[]
   ) => {
-    dispatch(addInventoryItem({ item, images }))
+    dispatch(addInventoryItem({ item, images, pdfs }))
   }
 
   const handleEditItem = (
     item: InventoryItem,
     images: File[],
-    imagesToRemove: string[]
+    imagesToRemove: string[],
+    pdfs: File[],
+    pdfsToRemove: string[]
   ) => {
-    dispatch(updateInventoryItem({ item, newImages: images, imagesToRemove }))
+    dispatch(
+      updateInventoryItem({
+        item,
+        newImages: images,
+        imagesToRemove,
+        newPDFs: pdfs,
+        pdfsToRemove,
+      })
+    )
   }
 
   const handleSubmit = (
     item: Omit<InventoryItem, 'id'> | InventoryItem,
     images: File[],
-    imagesToRemove: string[] = []
+    imagesToRemove: string[] = [],
+    pdfs: File[] = [],
+    pdfsToRemove: string[] = []
   ) => {
     if ('id' in item) {
-      handleEditItem(item as InventoryItem, images, imagesToRemove)
+      handleEditItem(
+        item as InventoryItem,
+        images,
+        imagesToRemove,
+        pdfs,
+        pdfsToRemove
+      )
     } else {
-      handleCreateItem(item as Omit<InventoryItem, 'id'>, images)
+      handleCreateItem(item as Omit<InventoryItem, 'id'>, images, pdfs)
     }
   }
 
@@ -69,11 +88,17 @@ const Inventory: React.FC = () => {
   }
 
   const confirmDeleteItem = () => {
-    if (itemToDelete && itemToDelete.id && itemToDelete.images) {
+    if (
+      itemToDelete &&
+      itemToDelete.id &&
+      itemToDelete.images &&
+      itemToDelete.documentation
+    ) {
       dispatch(
         deleteInventoryItem({
           id: itemToDelete.id,
           imageUrls: itemToDelete.images,
+          pdfUrls: itemToDelete.documentation,
         })
       )
     }

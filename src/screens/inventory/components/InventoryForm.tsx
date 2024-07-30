@@ -12,7 +12,9 @@ type InventoryFormProps = {
   onSubmit: (
     item: Omit<InventoryItem, 'id'>,
     images: File[],
-    imagesToRemove?: string[]
+    imagesToRemove?: string[],
+    pdfs?: File[],
+    pdfsToRemove?: string[]
   ) => void
   editingItem?: InventoryItem | null
   onClose: () => void
@@ -39,6 +41,10 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
   const [imageUrls, setImageUrls] = useState<string[]>(
     editingItem?.images || []
   )
+  const [pdfs, setPdfs] = useState<File[]>([])
+  const [pdfUrls, setPdfUrls] = useState<string[]>(
+    editingItem?.documentation || []
+  )
   const formRef = useRef<HTMLFormElement>(null)
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,8 +53,18 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
     }
   }
 
+  const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setPdfs([...pdfs, ...Array.from(e.target.files)])
+    }
+  }
+
   const handleImageRemove = (url: string) => {
     setImageUrls(imageUrls.filter((imageUrl) => imageUrl !== url))
+  }
+
+  const handlePdfRemove = (url: string) => {
+    setPdfUrls(pdfUrls.filter((pdfUrl) => pdfUrl !== url))
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -65,12 +81,15 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
         breakageFee,
         block,
         images: imageUrls,
+        documentation: pdfUrls,
         updatedAt: timestamp,
       }
       onSubmit(
         updatedItem,
         images,
-        imageUrls.filter((url) => !editingItem.images?.includes(url))
+        imageUrls.filter((url) => !editingItem.images?.includes(url)),
+        pdfs,
+        pdfUrls.filter((url) => !editingItem.documentation?.includes(url))
       )
     } else {
       const newItem: Omit<InventoryItem, 'id'> = {
@@ -81,10 +100,11 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
         breakageFee,
         block,
         images: imageUrls,
+        documentation: pdfUrls,
         createdAt: timestamp,
         updatedAt: timestamp,
       }
-      onSubmit(newItem, images)
+      onSubmit(newItem, images, [], pdfs)
     }
   }
 
@@ -98,6 +118,8 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
       setBlock(0)
       setImages([])
       setImageUrls([])
+      setPdfs([])
+      setPdfUrls([])
       onClose()
       dispatch(resetAddInventoryItemRequest())
       dispatch(resetUpdateInventoryItemRequest())
@@ -264,6 +286,39 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
                     type="button"
                     className="absolute right-0 top-0 rounded-full bg-red-600 p-1 text-white"
                     onClick={() => handleImageRemove(url)}
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mt-4 space-y-6">
+            <label className="block text-sm font-medium leading-6 text-gray-900">
+              Documentos PDF
+            </label>
+            <input
+              type="file"
+              accept="application/pdf"
+              multiple
+              onChange={handlePdfChange}
+              className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none"
+            />
+            <div className="grid grid-cols-3 gap-4">
+              {pdfUrls.map((url, index) => (
+                <div key={index} className="relative">
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full text-blue-500 underline"
+                  >
+                    PDF {index + 1}
+                  </a>
+                  <button
+                    type="button"
+                    className="absolute right-0 top-0 rounded-full bg-red-600 p-1 text-white"
+                    onClick={() => handlePdfRemove(url)}
                   >
                     X
                   </button>

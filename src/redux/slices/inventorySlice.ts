@@ -9,7 +9,12 @@ import {
 } from 'firebase/firestore'
 import { db } from '../../firebase'
 import { InventoryItem, IRequest } from '../../types'
-import { uploadImages, deleteImages } from '../../helpers/uploadStorage'
+import {
+  uploadImages,
+  deleteImages,
+  uploadPDF,
+  deletePDF,
+} from '../../helpers/uploadStorage'
 
 interface InventoryState {
   items: InventoryItem[]
@@ -44,9 +49,14 @@ export const addInventoryItem = createAsyncThunk(
   async ({
     item,
     images,
+    pdfs,
   }: {
-    item: Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt' | 'images'>
+    item: Omit<
+      InventoryItem,
+      'id' | 'createdAt' | 'updatedAt' | 'images' | 'documentation'
+    >
     images: File[]
+    pdfs: File[]
   }) => {
     const timestamp = new Date().toISOString()
     const docRef = await addDoc(collection(db, 'inventory'), {
@@ -54,10 +64,13 @@ export const addInventoryItem = createAsyncThunk(
       createdAt: timestamp,
       updatedAt: timestamp,
       images: [],
+      documentation: [],
     })
     const imageUrls = await uploadImages(images, docRef.id)
+    const pdfUrls = await uploadPDF(pdfs, docRef.id)
     await updateDoc(docRef, {
       images: imageUrls,
+      documentation: pdfUrls,
     })
     return {
       id: docRef.id,
@@ -65,6 +78,7 @@ export const addInventoryItem = createAsyncThunk(
       createdAt: timestamp,
       updatedAt: timestamp,
       images: imageUrls,
+      documentation: pdfUrls,
     }
   }
 )
@@ -75,35 +89,60 @@ export const updateInventoryItem = createAsyncThunk(
     item,
     newImages,
     imagesToRemove,
+    newPDFs,
+    pdfsToRemove,
   }: {
     item: InventoryItem
     newImages: File[]
     imagesToRemove: string[]
+    newPDFs: File[]
+    pdfsToRemove: string[]
   }) => {
-    const { id, images, ...data } = item
+    const { id, images, documentation, ...data } = item
     const timestamp = new Date().toISOString()
 
     await deleteImages(imagesToRemove)
+    await deletePDF(pdfsToRemove)
     const newImageUrls = await uploadImages(newImages, id)
+    const newPDFUrls = await uploadPDF(newPDFs, id)
     const updatedImages = [
       ...(images || []).filter((url) => !imagesToRemove.includes(url)),
       ...newImageUrls,
+    ]
+    const updatedPDFs = [
+      ...(documentation || []).filter((url) => !pdfsToRemove.includes(url)),
+      ...newPDFUrls,
     ]
 
     await updateDoc(doc(db, 'inventory', id), {
       ...data,
       updatedAt: timestamp,
       images: updatedImages,
+      documentation: updatedPDFs,
     })
-    return { ...item, updatedAt: timestamp, images: updatedImages }
+    return {
+      ...item,
+      updatedAt: timestamp,
+      images: updatedImages,
+      documentation: updatedPDFs,
+    }
   }
 )
 
 export const deleteInventoryItem = createAsyncThunk(
   'inventory/deleteInventoryItem',
-  async ({ id, imageUrls }: { id: string; imageUrls: string[] }) => {
+  async ({
+    id,
+    imageUrls,
+    pdfUrls,
+  }: {
+    id: string
+    imageUrls: string[]
+    pdfUrls: string[]
+  }) => {
     await deleteDoc(doc(db, 'inventory', id))
     await deleteImages(imageUrls)
+    await deletePDF(pdfUrls)
     return id
   }
 )
