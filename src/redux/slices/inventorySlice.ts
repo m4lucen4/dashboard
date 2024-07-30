@@ -7,14 +7,9 @@ import {
   deleteDoc,
   doc,
 } from 'firebase/firestore'
-import {
-  getDownloadURL,
-  ref,
-  uploadBytes,
-  deleteObject,
-} from 'firebase/storage'
-import { db, storage } from '../../firebase'
+import { db } from '../../firebase'
 import { InventoryItem, IRequest } from '../../types'
+import { uploadImages, deleteImages } from '../../helpers/uploadStorage'
 
 interface InventoryState {
   items: InventoryItem[]
@@ -30,38 +25,6 @@ const initialState: InventoryState = {
   addInventoryItemRequest: { inProgress: false, messages: '', ok: false },
   updateInventoryItemRequest: { inProgress: false, messages: '', ok: false },
   deleteInventoryItemRequest: { inProgress: false, messages: '', ok: false },
-}
-
-// Helper function to upload images to Firebase Storage
-const uploadImages = async (
-  images: File[],
-  itemId: string
-): Promise<string[]> => {
-  const uploadPromises = images.map(async (image) => {
-    const storageRef = ref(storage, `inventory/${itemId}/${image.name}`)
-    await uploadBytes(storageRef, image)
-    return getDownloadURL(storageRef)
-  })
-  return Promise.all(uploadPromises)
-}
-
-// Helper function to upload pdfs to Firebase Storage
-const uploadPDF = async (pdfs: File[]): Promise<string[]> => {
-  const uploadPromises = pdfs.map(async (pdf) => {
-    const storageRef = ref(storage, `documentation/${pdf.name}`)
-    await uploadBytes(storageRef, pdf)
-    return getDownloadURL(storageRef)
-  })
-  return Promise.all(uploadPromises)
-}
-
-// Helper function to delete images from Firebase Storage
-const deleteImages = async (imageUrls: string[]) => {
-  const deletePromises = imageUrls.map(async (url) => {
-    const imageRef = ref(storage, url)
-    await deleteObject(imageRef)
-  })
-  return Promise.all(deletePromises)
 }
 
 // #region Async thunks for CRUD operations on Categories
@@ -90,7 +53,7 @@ export const addInventoryItem = createAsyncThunk(
       ...item,
       createdAt: timestamp,
       updatedAt: timestamp,
-      images: [], // Temporalmente vacío hasta que las imágenes se suban
+      images: [],
     })
     const imageUrls = await uploadImages(images, docRef.id)
     await updateDoc(docRef, {
