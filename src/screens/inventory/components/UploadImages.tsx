@@ -23,21 +23,20 @@ const UploadImages: React.FC<ImageUploadProps> = ({
         onChange={onImageChange}
         className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none"
       />
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-5 gap-2">
         {imageUrls.map((url, index) => (
-          <div key={index} className="relative">
+          <div key={index} className="relative flex flex-col items-center">
             <img
               src={url}
               alt={`image-${index}`}
-              className="h-50 w-50 rounded-md"
+              className="mb-2 h-12 w-12 rounded-md"
             />
-            <button
-              type="button"
-              className="absolute right-0 top-0 rounded-full bg-red-600 p-1 text-white"
+            <span
+              className="cursor-pointer text-red-600"
               onClick={() => onImageRemove(url)}
             >
-              X
-            </button>
+              Eliminar
+            </span>
           </div>
         ))}
       </div>
