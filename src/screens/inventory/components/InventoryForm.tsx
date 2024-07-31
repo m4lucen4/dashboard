@@ -29,6 +29,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
   editingItem,
   onClose,
 }) => {
+  console.log(categories)
   const dispatch = useDispatch()
   const { addInventoryItemRequest, updateInventoryItemRequest } = useSelector(
     (state: RootState) => state.inventory
@@ -142,6 +143,21 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
     dispatch,
     onClose,
   ])
+
+  useEffect(() => {
+    if (editingItem) {
+      setTitle(editingItem.title)
+      setDescription(editingItem.description)
+      setCategory(editingItem.category)
+      setSubcategory(editingItem.subcategory)
+      setPrice(editingItem.price)
+      setUnits(editingItem.units)
+      setBreakageFee(editingItem.breakageFee)
+      setBlock(editingItem.block)
+      setImageUrls(editingItem.images || [])
+      setPdfUrls(editingItem.documentation || [])
+    }
+  }, [editingItem])
 
   return (
     <form ref={formRef} onSubmit={handleSubmit}>

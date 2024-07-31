@@ -57,7 +57,7 @@ const InventoryList: React.FC<UsersListProps> = ({
                   scope="col"
                   className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-1"
                 >
-                  Categoría
+                  Categoría / Subcategoría
                 </th>
                 <th
                   scope="col"
@@ -86,7 +86,7 @@ const InventoryList: React.FC<UsersListProps> = ({
                     {item.title}
                   </td>
                   <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                    {item.category}
+                    {item.category} / {item.subcategory}
                   </td>
                   <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                     {item.units}
