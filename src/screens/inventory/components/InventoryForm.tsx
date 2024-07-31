@@ -1,14 +1,16 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../../redux/store'
+import { CategoryItem, InventoryItem } from '../../../types'
 import {
   resetAddInventoryItemRequest,
   resetUpdateInventoryItemRequest,
 } from '../../../redux/slices/inventorySlice'
 import ActionButtonsForm from '../../../components/ActionButtonsForm/ActionButtonsForm'
-import { InventoryItem } from '../../../types'
+import UploadPdf from './UploadPdf'
 
 type InventoryFormProps = {
+  categories: CategoryItem[]
   onSubmit: (
     item: Omit<InventoryItem, 'id'>,
     images: File[],
@@ -21,6 +23,7 @@ type InventoryFormProps = {
 }
 
 const InventoryForm: React.FC<InventoryFormProps> = ({
+  categories,
   onSubmit,
   editingItem,
   onClose,
@@ -31,6 +34,8 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
   )
   const [title, setTitle] = useState(editingItem?.title || '')
   const [description, setDescription] = useState(editingItem?.description || '')
+  const [category, setCategory] = useState(editingItem?.category || '')
+  const [subcategory, setSubcategory] = useState(editingItem?.category || '')
   const [price, setPrice] = useState(editingItem?.price || 0)
   const [units, setUnits] = useState(editingItem ? editingItem.units : 0)
   const [breakageFee, setBreakageFee] = useState(
@@ -76,6 +81,8 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
         ...editingItem,
         title,
         description,
+        category,
+        subcategory,
         price,
         units,
         breakageFee,
@@ -95,6 +102,8 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
       const newItem: Omit<InventoryItem, 'id'> = {
         title,
         description,
+        category,
+        subcategory,
         price,
         units,
         breakageFee,
@@ -112,6 +121,8 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
     if (addInventoryItemRequest.ok || updateInventoryItemRequest.ok) {
       setTitle('')
       setDescription('')
+      setCategory('')
+      setSubcategory('')
       setPrice(0)
       setBreakageFee(0)
       setUnits(0)
@@ -175,6 +186,70 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
                       required
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="category"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Categoría
+                  </label>
+                  <div className="mt-2">
+                    <select
+                      id="category"
+                      name="category"
+                      value={category}
+                      onChange={(e) => {
+                        setCategory(e.target.value)
+                        setSubcategory('')
+                      }}
+                      required
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    >
+                      <option value="" disabled>
+                        Seleccione una categoría
+                      </option>
+                      {Array.from(
+                        new Set(categories.map((c) => c.categoryName))
+                      ).map((cat, index) => (
+                        <option key={index} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="subcategory"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Subcategoría
+                  </label>
+                  <div className="mt-2">
+                    <select
+                      id="subcategory"
+                      name="subcategory"
+                      value={subcategory}
+                      onChange={(e) => setSubcategory(e.target.value)}
+                      required
+                      disabled={!category}
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    >
+                      <option value="" disabled>
+                        Seleccione una subcategoría
+                      </option>
+                      {categories
+                        .filter((c) => c.categoryName === category)
+                        .map((sub, index) => (
+                          <option key={index} value={sub.subcategoryName}>
+                            {sub.subcategoryName}
+                          </option>
+                        ))}
+                    </select>
                   </div>
                 </div>
 
@@ -293,39 +368,11 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
               ))}
             </div>
           </div>
-          <div className="mt-4 space-y-6">
-            <label className="block text-sm font-medium leading-6 text-gray-900">
-              Documentos PDF
-            </label>
-            <input
-              type="file"
-              accept="application/pdf"
-              multiple
-              onChange={handlePdfChange}
-              className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none"
-            />
-            <div className="grid grid-cols-3 gap-4">
-              {pdfUrls.map((url, index) => (
-                <div key={index} className="relative">
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full text-blue-500 underline"
-                  >
-                    PDF {index + 1}
-                  </a>
-                  <button
-                    type="button"
-                    className="absolute right-0 top-0 rounded-full bg-red-600 p-1 text-white"
-                    onClick={() => handlePdfRemove(url)}
-                  >
-                    X
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
+          <UploadPdf
+            pdfUrls={pdfUrls}
+            onPdfChange={handlePdfChange}
+            onPdfRemove={handlePdfRemove}
+          />
         </div>
       </div>
       <ActionButtonsForm onClose={onClose} />

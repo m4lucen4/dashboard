@@ -15,6 +15,7 @@ import InventoryForm from './components/InventoryForm'
 import Loading from '../../components/Loading/Loading'
 import ListHeader from '../../components/ListHeader/ListHeader'
 import Modal from '../../components/Modal/Modal'
+import { fetchCategories } from '../../redux/slices/categoriesSlice'
 
 const Inventory: React.FC = () => {
   const dispatch: AppDispatch = useDispatch()
@@ -26,6 +27,8 @@ const Inventory: React.FC = () => {
     fetchInventoryRequest,
   } = useSelector((state: RootState) => state.inventory)
 
+  const { categories } = useSelector((state: RootState) => state.category)
+
   const [open, setOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [itemToDelete, setItemToDelete] = useState<InventoryItem | null>(null)
@@ -34,6 +37,7 @@ const Inventory: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchInventory())
+    dispatch(fetchCategories())
   }, [dispatch])
 
   const handleCreateItem = (
@@ -157,6 +161,7 @@ const Inventory: React.FC = () => {
         fullScreen={true}
       >
         <InventoryForm
+          categories={categories}
           onSubmit={handleSubmit}
           editingItem={editingItem}
           onClose={handleCloseDrawer}

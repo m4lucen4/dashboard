@@ -57,6 +57,12 @@ const InventoryList: React.FC<UsersListProps> = ({
                   scope="col"
                   className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-1"
                 >
+                  Categoría
+                </th>
+                <th
+                  scope="col"
+                  className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-1"
+                >
                   Unidades
                 </th>
                 <th
@@ -78,6 +84,9 @@ const InventoryList: React.FC<UsersListProps> = ({
                 <tr key={item.id}>
                   <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-1">
                     {item.title}
+                  </td>
+                  <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                    {item.category}
                   </td>
                   <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                     {item.units}

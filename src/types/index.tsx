@@ -37,6 +37,8 @@ export interface InventoryItem {
   updatedAt: string
   title: string
   description: string
+  category: string
+  subcategory: string
   price: number
   units: number
   block: number
