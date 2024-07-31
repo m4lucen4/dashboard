@@ -10,6 +10,7 @@ import CategoryList from './components/CategoryList'
 import { fetchCategories } from '../../redux/slices/categoriesSlice'
 import CategoryForm from './components/CategoryForm'
 import ListHeader from '../../components/ListHeader/ListHeader'
+import { fetchInventory } from '../../redux/slices/inventorySlice'
 
 const Category: React.FC = () => {
   const dispatch: AppDispatch = useDispatch()
@@ -19,6 +20,7 @@ const Category: React.FC = () => {
     updateCategoryRequest,
     fetchCategoriesRequest,
   } = useSelector((state: RootState) => state.category)
+  const { items } = useSelector((state: RootState) => state.inventory)
 
   const [open, setOpen] = useState(false)
   const [editingCategory, setEditingCategory] = useState<CategoryItem | null>(
@@ -28,6 +30,7 @@ const Category: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchCategories())
+    dispatch(fetchInventory())
   }, [dispatch])
 
   const handleCreateItem = (category: CategoryItem) => {
@@ -74,7 +77,11 @@ const Category: React.FC = () => {
         onOpen={() => setOpen(true)}
         onSearch={setSearchTerm}
       />
-      <CategoryList categories={filteredItems} onEdit={handleOpenEditForm} />
+      <CategoryList
+        categories={filteredItems}
+        onEdit={handleOpenEditForm}
+        items={items}
+      />
       <Drawer
         open={open}
         title={editingCategory ? 'Editar categoría' : 'Añadir categoría'}

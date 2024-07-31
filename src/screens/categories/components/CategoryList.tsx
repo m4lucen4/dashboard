@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react'
-import { CategoryItem } from '../../../types'
+import { CategoryItem, InventoryItem } from '../../../types'
 import { PencilIcon } from '@heroicons/react/24/outline'
 import Pagination from '../../../components/Pagination/Pagination'
 
 type CategoriesListProps = {
   categories: CategoryItem[]
+  items: InventoryItem[]
   onEdit: (category: CategoryItem) => void
 }
 
-const UsersList: React.FC<CategoriesListProps> = ({ categories, onEdit }) => {
+const UsersList: React.FC<CategoriesListProps> = ({
+  categories,
+  onEdit,
+  items,
+}) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [currentCategories, setCurrentCategories] = useState<CategoryItem[]>([])
   const categoriesPerPage = 10
@@ -37,6 +42,10 @@ const UsersList: React.FC<CategoriesListProps> = ({ categories, onEdit }) => {
     return null
   }
 
+  const getItemCountBySubcategory = (subcategoryName: string) => {
+    return items.filter((item) => item.subcategory === subcategoryName).length
+  }
+
   return (
     <div className="mt-8 flow-root">
       <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -58,6 +67,12 @@ const UsersList: React.FC<CategoriesListProps> = ({ categories, onEdit }) => {
                 </th>
                 <th
                   scope="col"
+                  className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-1"
+                >
+                  Total items
+                </th>
+                <th
+                  scope="col"
                   className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-0"
                 >
                   Acciones
@@ -72,6 +87,9 @@ const UsersList: React.FC<CategoriesListProps> = ({ categories, onEdit }) => {
                   </td>
                   <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                     {category.subcategoryName}
+                  </td>
+                  <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                    {getItemCountBySubcategory(category.subcategoryName || '')}
                   </td>
                   <td className="gap-x-2 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                     <button
