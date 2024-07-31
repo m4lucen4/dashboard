@@ -8,6 +8,7 @@ import {
 } from '../../../redux/slices/inventorySlice'
 import ActionButtonsForm from '../../../components/ActionButtonsForm/ActionButtonsForm'
 import UploadPdf from './UploadPdf'
+import UploadImages from './UploadImages'
 
 type InventoryFormProps = {
   categories: CategoryItem[]
@@ -338,36 +339,11 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
         </div>
         {/* Second column */}
         <div className="col-span-1 p-4">
-          <div className="space-y-6">
-            <label className="block text-sm font-medium leading-6 text-gray-900">
-              Imágenes
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageChange}
-              className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none"
-            />
-            <div className="grid grid-cols-3 gap-4">
-              {imageUrls.map((url, index) => (
-                <div key={index} className="relative">
-                  <img
-                    src={url}
-                    alt={`image-${index}`}
-                    className="h-50 w-50 rounded-md"
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-0 top-0 rounded-full bg-red-600 p-1 text-white"
-                    onClick={() => handleImageRemove(url)}
-                  >
-                    X
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
+          <UploadImages
+            imageUrls={imageUrls}
+            onImageChange={handleImageChange}
+            onImageRemove={handleImageRemove}
+          />
           <UploadPdf
             pdfUrls={pdfUrls}
             onPdfChange={handlePdfChange}
