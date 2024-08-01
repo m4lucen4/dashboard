@@ -6,6 +6,8 @@ export const errorMessages: { [key: string]: string } = {
   'auth/wrong-password': 'La contraseña es incorrecta.',
   'auth/weak-password': 'La contraseña es demasiado débil.',
   'User account is not active': 'Este usuario no está activo',
+  'Category cannot be deleted due to linked items':
+    'No se puede eliminar la categoría porque tiene artículos vinculados.',
 }
 
 export const getFriendlyErrorMessage = (error: string): string => {

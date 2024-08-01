@@ -12,7 +12,6 @@ const UploadPdf: React.FC<PDFUploadProps> = ({
   onPdfChange,
   onPdfRemove,
 }) => {
-  console.log(pdfUrls)
   return (
     <div className="mt-4 space-y-6">
       <label className="block text-sm font-medium leading-6 text-gray-900">

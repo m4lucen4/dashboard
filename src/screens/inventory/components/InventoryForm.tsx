@@ -29,7 +29,6 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
   editingItem,
   onClose,
 }) => {
-  console.log(categories)
   const dispatch = useDispatch()
   const { addInventoryItemRequest, updateInventoryItemRequest } = useSelector(
     (state: RootState) => state.inventory

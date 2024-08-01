@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { CategoryItem, InventoryItem } from '../../../types'
-import { PencilIcon } from '@heroicons/react/24/outline'
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Pagination from '../../../components/Pagination/Pagination'
 
 type CategoriesListProps = {
   categories: CategoryItem[]
   items: InventoryItem[]
   onEdit: (category: CategoryItem) => void
+  onDelete: (category: CategoryItem) => void
 }
 
 const UsersList: React.FC<CategoriesListProps> = ({
   categories,
   onEdit,
+  onDelete,
   items,
 }) => {
   const [currentPage, setCurrentPage] = useState(1)
@@ -97,6 +99,12 @@ const UsersList: React.FC<CategoriesListProps> = ({
                       className="mr-1 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
                       <PencilIcon aria-hidden="true" className="h-5 w-5" />
+                    </button>
+                    <button
+                      onClick={() => onDelete(category)}
+                      className="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                    >
+                      <TrashIcon aria-hidden="true" className="h-5 w-5" />
                     </button>
                   </td>
                 </tr>
