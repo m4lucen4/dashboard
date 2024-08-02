@@ -31,6 +31,11 @@ export interface User {
   updatedAt?: string
 }
 
+export interface SpecialPrice {
+  dates: string[]
+  specialPrice: number
+}
+
 export interface InventoryItem {
   id: string
   createdAt: string
@@ -45,6 +50,7 @@ export interface InventoryItem {
   breakageFee?: number
   images?: string[]
   documentation?: string[]
+  specialPrice?: SpecialPrice[]
 }
 
 export interface CategoryItem {

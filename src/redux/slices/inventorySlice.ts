@@ -53,7 +53,12 @@ export const addInventoryItem = createAsyncThunk(
   }: {
     item: Omit<
       InventoryItem,
-      'id' | 'createdAt' | 'updatedAt' | 'images' | 'documentation'
+      | 'id'
+      | 'createdAt'
+      | 'updatedAt'
+      | 'images'
+      | 'documentation'
+      | 'specialPrice'
     >
     images: File[]
     pdfs: File[]
@@ -65,6 +70,7 @@ export const addInventoryItem = createAsyncThunk(
       updatedAt: timestamp,
       images: [],
       documentation: [],
+      specialPrice: [],
     })
     const imageUrls = await uploadImages(images, docRef.id)
     const pdfUrls = await uploadPDF(pdfs, docRef.id)
@@ -79,6 +85,7 @@ export const addInventoryItem = createAsyncThunk(
       updatedAt: timestamp,
       images: imageUrls,
       documentation: pdfUrls,
+      specialPrice: [],
     }
   }
 )
@@ -98,7 +105,7 @@ export const updateInventoryItem = createAsyncThunk(
     newPDFs: File[]
     pdfsToRemove: string[]
   }) => {
-    const { id, images, documentation, ...data } = item
+    const { id, images, documentation, specialPrice, ...data } = item
     const timestamp = new Date().toISOString()
 
     await deleteImages(imagesToRemove)
@@ -119,12 +126,14 @@ export const updateInventoryItem = createAsyncThunk(
       updatedAt: timestamp,
       images: updatedImages,
       documentation: updatedPDFs,
+      specialPrice: specialPrice || [],
     })
     return {
       ...item,
       updatedAt: timestamp,
       images: updatedImages,
       documentation: updatedPDFs,
+      specialPrice: specialPrice || [],
     }
   }
 )

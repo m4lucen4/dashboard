@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../../redux/store'
-import { CategoryItem, InventoryItem } from '../../../types'
+import { CategoryItem, InventoryItem, SpecialPrice } from '../../../types'
 import {
   resetAddInventoryItemRequest,
   resetUpdateInventoryItemRequest,
@@ -9,6 +9,7 @@ import {
 import ActionButtonsForm from '../../../components/ActionButtonsForm/ActionButtonsForm'
 import UploadPdf from './UploadPdf'
 import UploadImages from './UploadImages'
+import SpecialPriceInput from './SpecialPrice'
 
 type InventoryFormProps = {
   categories: CategoryItem[]
@@ -51,6 +52,9 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
   const [pdfUrls, setPdfUrls] = useState<string[]>(
     editingItem?.documentation || []
   )
+  const [specialPrice, setSpecialPrice] = useState<SpecialPrice[]>(
+    editingItem?.specialPrice || []
+  )
   const formRef = useRef<HTMLFormElement>(null)
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,6 +77,10 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
     setPdfUrls(pdfUrls.filter((pdfUrl) => pdfUrl !== url))
   }
 
+  const handleAddSpecialPrice = (dates: string[], price: number) => {
+    setSpecialPrice([...specialPrice, { dates, specialPrice: price }])
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const timestamp = new Date().toISOString()
@@ -90,6 +98,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
         block,
         images: imageUrls,
         documentation: pdfUrls,
+        specialPrice: specialPrice,
         updatedAt: timestamp,
       }
       onSubmit(
@@ -111,6 +120,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
         block,
         images: imageUrls,
         documentation: pdfUrls,
+        specialPrice: specialPrice,
         createdAt: timestamp,
         updatedAt: timestamp,
       }
@@ -364,6 +374,15 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
             onPdfChange={handlePdfChange}
             onPdfRemove={handlePdfRemove}
           />
+          <SpecialPriceInput onAdd={handleAddSpecialPrice} />
+          <div>
+            {specialPrice.map((sp, index) => (
+              <div key={index}>
+                <p>Fechas: {sp.dates.join(', ')}</p>
+                <p>Precio Especial: {sp.specialPrice}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <ActionButtonsForm onClose={onClose} />
