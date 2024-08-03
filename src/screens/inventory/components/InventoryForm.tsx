@@ -158,6 +158,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
       setImageUrls([])
       setPdfs([])
       setPdfUrls([])
+      setSpecialPrice([])
       onClose()
       dispatch(resetAddInventoryItemRequest())
       dispatch(resetUpdateInventoryItemRequest())
@@ -397,25 +398,30 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
         </div>
         {/* Second column */}
         <div className="col-span-1 p-4">
-          <div>
-            {specialPrice.map((sp, index) => (
-              <div key={index} className="flex items-center justify-between">
-                <div>
-                  <label className="font-bold">
-                    Precio Especial: {sp.specialPrice}
-                  </label>
-                  <p>{formatDates(sp.dates).join(', ')}</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleRemoveSpecialPrice(index)}
-                  className="ml-4 inline-flex justify-center rounded-md border border-transparent bg-red-600 px-2 py-1 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+          {specialPrice.length > 0 && (
+            <div className="max-h-72 overflow-y-auto rounded-lg border border-dashed border-gray-900/25 p-2">
+              {specialPrice.map((sp, index) => (
+                <div
+                  key={index}
+                  className="mb-2 flex items-center justify-between rounded-md bg-white p-2 shadow-sm"
                 >
-                  Eliminar
-                </button>
-              </div>
-            ))}
-          </div>
+                  <div>
+                    <label className="font-bold">
+                      Precio Especial: {sp.specialPrice}
+                    </label>
+                    <p>{formatDates(sp.dates).join(', ')}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveSpecialPrice(index)}
+                    className="ml-4 inline-flex justify-center rounded-md border border-transparent bg-red-600 px-2 py-1 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <ActionButtonsForm onClose={onClose} />

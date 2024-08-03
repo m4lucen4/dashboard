@@ -70,7 +70,6 @@ export const addInventoryItem = createAsyncThunk(
       updatedAt: timestamp,
       images: [],
       documentation: [],
-      specialPrice: [],
     })
     const imageUrls = await uploadImages(images, docRef.id)
     const pdfUrls = await uploadPDF(pdfs, docRef.id)
@@ -85,7 +84,6 @@ export const addInventoryItem = createAsyncThunk(
       updatedAt: timestamp,
       images: imageUrls,
       documentation: pdfUrls,
-      specialPrice: [],
     }
   }
 )
