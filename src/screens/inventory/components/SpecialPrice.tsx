@@ -38,8 +38,8 @@ const SpecialPriceInput: React.FC<SpecialPriceInputProps> = ({ onAdd }) => {
   }
 
   return (
-    <div className="space-y-4">
-      <div>
+    <div className="flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0">
+      <div className="md:w-1/2">
         <label className="block text-sm font-medium text-gray-700">
           Seleccione Fechas
         </label>
@@ -48,30 +48,34 @@ const SpecialPriceInput: React.FC<SpecialPriceInputProps> = ({ onAdd }) => {
           onChange={handleDateChange}
           highlightDates={selectedDates}
           inline
-          className="rounded-md border"
+          className="w-full rounded-md border"
           placeholderText="Seleccione múltiples fechas"
         />
       </div>
 
-      <div>
+      <div className="space-y-4 md:w-1/2">
         <label className="block text-sm font-medium text-gray-700">
           Precio Especial
         </label>
-        <input
-          type="number"
-          value={price}
-          onChange={(e) => setPrice(Number(e.target.value))}
-          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-        />
-      </div>
 
-      <button
-        type="button"
-        onClick={handleAdd}
-        className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-      >
-        Agregar Precio Especial
-      </button>
+        <div className="relative flex h-10 w-full min-w-[200px] max-w-[24rem]">
+          <button
+            className="peer-placeholder-shown:bg-blue-gray-500 !absolute right-1 top-1 z-10 select-none rounded bg-indigo-500 px-4 py-2 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-indigo-500/20 transition-all hover:shadow-lg hover:shadow-indigo-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none peer-placeholder-shown:pointer-events-none peer-placeholder-shown:opacity-50 peer-placeholder-shown:shadow-none"
+            type="button"
+            onClick={handleAdd}
+            data-ripple-light="true"
+          >
+            Agregar
+          </button>
+          <input
+            type="number"
+            value={price}
+            onChange={(e) => setPrice(Number(e.target.value))}
+            className="border-blue-gray-200 text-blue-gray-700 placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 disabled:bg-blue-gray-50 peer h-full w-full rounded-[7px] border bg-transparent px-3 py-2.5 pr-20 font-sans text-sm font-normal outline outline-0 transition-all placeholder-shown:border"
+            placeholder=" "
+          />
+        </div>
+      </div>
     </div>
   )
 }

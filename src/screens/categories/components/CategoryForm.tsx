@@ -76,15 +76,15 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-3">
               <label
-                htmlFor="first-name"
+                htmlFor="category-name"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Categoría Principal
               </label>
               <div className="mt-2">
                 <input
-                  id="first-name"
-                  name="first-name"
+                  id="category-name"
+                  name="category-name"
                   type="text"
                   value={categoryName}
                   onChange={(e) => setCategoryName(e.target.value)}
@@ -96,15 +96,15 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
             </div>
             <div className="sm:col-span-3">
               <label
-                htmlFor="first-name"
+                htmlFor="subcategory-name"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Subcategoría
               </label>
               <div className="mt-2">
                 <input
-                  id="first-name"
-                  name="first-name"
+                  id="subcategory-name"
+                  name="subcategory-name"
                   type="text"
                   value={subcategoryName}
                   onChange={(e) => setSubcategoryName(e.target.value)}
