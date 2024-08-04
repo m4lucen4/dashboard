@@ -1,5 +1,19 @@
 {
+  "login": {
+    "header": "Login with your account",
+    "email": "Email",
+    "password": "Password",
+    "recoveryUser": "Recovery user",
+    "login": "Login"
+  },
   "inventory": "Inventory",
   "addItem": "Add item",
-  "editItem": "Edit item"
+  "editItem": "Edit item",
+  "profile": {
+    "title": "Profile",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "language": "Language"
+  }
 }

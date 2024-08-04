@@ -6,6 +6,7 @@ export interface IRequest {
 
 export interface CurrentUser {
   uid: string
+  language?: string
   createdAt: string
   updatedAt: string
   token?: string
@@ -27,6 +28,7 @@ export interface User {
   city?: string
   role: string
   active: boolean
+  language: string
   createdAt?: string
   updatedAt?: string
 }

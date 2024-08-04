@@ -1,5 +1,23 @@
 {
+  "login": {
+    "header": "Accede con tu cuenta",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "recoveryUser": "Recuperar usuario",
+    "login": "Entrar"
+  },
+  "profile": {
+    "title": "Perfil",
+    "name": "Nombre",
+    "email": "Email",
+    "phone": "Teléfono",
+    "phone2": "Teléfono 2",
+    "document": "Documento",
+    "language": "Idioma"
+  },
+  "error": {},
   "inventory": "Inventario",
+  "save": "Guardar",
   "addItem": "Añadir artículo",
   "editItem": "Editar artículo"
 }

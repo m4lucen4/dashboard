@@ -1,25 +1,27 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { AppDispatch } from '../../../redux/store';
-import { loginUser } from '../../../redux/slices/authSlice';
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { AppDispatch } from '../../../redux/store'
+import { loginUser } from '../../../redux/slices/authSlice'
 
 const LoginForm: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+    event.preventDefault()
     try {
-      const payload = { email, password };
-      await dispatch(loginUser(payload)).unwrap();
-      navigate('/home');
+      const payload = { email, password }
+      await dispatch(loginUser(payload)).unwrap()
+      navigate('/home')
     } catch (error) {
-      console.error('Failed to login:', error);
+      console.error('Failed to login:', error)
     }
-  };
+  }
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -30,7 +32,7 @@ const LoginForm: React.FC = () => {
           alt="Your Company"
         />
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Accede con tu cuenta
+          {t('login.header')}
         </h2>
       </div>
 
@@ -46,7 +48,7 @@ const LoginForm: React.FC = () => {
               htmlFor="email"
               className="block text-sm font-medium leading-6 text-gray-900"
             >
-              Correo electrónico
+              {t('login.email')}
             </label>
             <div className="mt-2">
               <input
@@ -68,14 +70,14 @@ const LoginForm: React.FC = () => {
                 htmlFor="password"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Contraseña
+                {t('login.password')}
               </label>
               <div className="text-sm">
                 <a
                   href="#"
                   className="font-semibold text-blue-600 hover:text-blue-500"
                 >
-                  Recuperar usuario
+                  {t('login.recoveryUser')}
                 </a>
               </div>
             </div>
@@ -98,13 +100,13 @@ const LoginForm: React.FC = () => {
               type="submit"
               className="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
             >
-              Entrar
+              {t('login.login')}
             </button>
           </div>
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginForm;
+export default LoginForm
