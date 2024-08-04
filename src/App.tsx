@@ -17,10 +17,13 @@ import Shop from './screens/shop/Shop'
 import Category from './screens/categories/Category'
 import { useSelector } from 'react-redux'
 import { RootState } from './redux/store'
+import { User } from './types'
 
 const App: React.FC = () => {
   const { i18n } = useTranslation()
-  const currentUser = useSelector((state: RootState) => state.auth.currentUser)
+  const currentUser = useSelector(
+    (state: RootState) => state.auth.currentUser as User
+  )
 
   useEffect(() => {
     if (currentUser) {
