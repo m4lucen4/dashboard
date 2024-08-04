@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { RootState, AppDispatch } from '../../redux/store'
 import Drawer from '../../components/Drawer/Drawer'
 import Alert from '../../components/Alert/Alert'
@@ -19,6 +20,7 @@ import { fetchCategories } from '../../redux/slices/categoriesSlice'
 
 const Inventory: React.FC = () => {
   const dispatch: AppDispatch = useDispatch()
+  const { t } = useTranslation()
   const {
     items,
     addInventoryItemRequest,
@@ -144,8 +146,8 @@ const Inventory: React.FC = () => {
         />
       )}
       <ListHeader
-        title="Inventario"
-        buttonLabel="Añadir artículo"
+        title={t('inventory')}
+        buttonLabel={t('addItem')}
         onOpen={() => setOpen(true)}
         onSearch={setSearchTerm}
       />
@@ -156,7 +158,7 @@ const Inventory: React.FC = () => {
       />
       <Drawer
         open={open}
-        title={editingItem ? 'Editar artículo' : 'Añadir artículo'}
+        title={editingItem ? t('editItem') : t('addItem')}
         onClose={handleCloseDrawer}
         fullScreen={true}
       >
