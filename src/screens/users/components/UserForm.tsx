@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { RootState } from '../../../redux/store'
 import {
   resetCreateUserRequest,
   resetEditUserRequest,
 } from '../../../redux/slices/usersSlice'
+
 import { User } from '../../../types'
 
 interface UserFormProps {
@@ -19,12 +21,13 @@ const UserForm: React.FC<UserFormProps> = ({
   onClose,
 }) => {
   const dispatch = useDispatch()
+  const { t } = useTranslation()
   const { createUserRequest, editUserRequest } = useSelector(
     (state: RootState) => state.users
   )
 
   const [email, setEmail] = useState(editingUser?.email || '')
-  const [password, setPassword] = useState('')
+  const [password, setPassword] = useState(editingUser?.password || '')
   const [firstName, setFirstName] = useState(editingUser?.firstName || '')
   const [lastName, setLastName] = useState(editingUser?.lastName || '')
   const [document, setDocument] = useState(editingUser?.document || '')
@@ -36,6 +39,9 @@ const UserForm: React.FC<UserFormProps> = ({
   const [city, setCity] = useState(editingUser?.city || '')
   const [role, setRole] = useState(editingUser?.role || '')
   const [active, setActive] = useState(editingUser?.active || false)
+  const [language, setLanguage] = useState(
+    editingUser?.language || navigator.language || 'es'
+  )
 
   const formRef = useRef<HTMLFormElement>(null)
 
@@ -55,6 +61,7 @@ const UserForm: React.FC<UserFormProps> = ({
       role,
       document,
       active,
+      language,
     }
     if (editingUser) {
       onSubmit({ ...user, id: editingUser.id })
@@ -78,6 +85,7 @@ const UserForm: React.FC<UserFormProps> = ({
       setCity('')
       setRole('')
       setActive(false)
+      setLanguage(navigator.language || 'es')
       onClose()
       dispatch(resetCreateUserRequest())
       dispatch(resetEditUserRequest())
@@ -88,16 +96,13 @@ const UserForm: React.FC<UserFormProps> = ({
     <form ref={formRef} onSubmit={handleSubmit}>
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
-          <p className="mt-1 text-sm leading-6 text-gray-600">
-            Use a permanent address where you can receive mail.
-          </p>
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-3">
               <label
                 htmlFor="first-name"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Nombre
+                {t('users.firstName')}
               </label>
               <div className="mt-2">
                 <input
@@ -118,7 +123,7 @@ const UserForm: React.FC<UserFormProps> = ({
                 htmlFor="last-name"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Apellidos
+                {t('users.lastName')}
               </label>
               <div className="mt-2">
                 <input
@@ -139,7 +144,7 @@ const UserForm: React.FC<UserFormProps> = ({
                 htmlFor="document"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                DNI/NIF
+                {t('users.document')}
               </label>
               <div className="mt-2">
                 <input
@@ -159,7 +164,7 @@ const UserForm: React.FC<UserFormProps> = ({
                 htmlFor="phone"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Teléfono
+                {t('users.phone')}
               </label>
               <div className="mt-2">
                 <input
@@ -179,7 +184,7 @@ const UserForm: React.FC<UserFormProps> = ({
                 htmlFor="phone2"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Teléfono 2
+                {t('users.phone2')}
               </label>
               <div className="mt-2">
                 <input
@@ -198,7 +203,7 @@ const UserForm: React.FC<UserFormProps> = ({
                 htmlFor="address"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Dirección
+                {t('users.address')}
               </label>
               <div className="mt-2">
                 <input
@@ -217,7 +222,7 @@ const UserForm: React.FC<UserFormProps> = ({
                 htmlFor="province"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Provincia
+                {t('users.province')}
               </label>
               <div className="mt-2">
                 <input
@@ -236,7 +241,7 @@ const UserForm: React.FC<UserFormProps> = ({
                 htmlFor="city"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Ciudad
+                {t('users.city')}
               </label>
               <div className="mt-2">
                 <input
@@ -255,7 +260,7 @@ const UserForm: React.FC<UserFormProps> = ({
                 htmlFor="address"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                C.P.
+                {t('users.cp')}
               </label>
               <div className="mt-2">
                 <input
@@ -274,7 +279,7 @@ const UserForm: React.FC<UserFormProps> = ({
                 htmlFor="email"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Email
+                {t('users.email')}
               </label>
               <div className="mt-2">
                 <input
@@ -296,7 +301,7 @@ const UserForm: React.FC<UserFormProps> = ({
                   htmlFor="password"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
-                  Contraseña
+                  {t('users.password')}
                 </label>
                 <div className="mt-2">
                   <input
@@ -319,7 +324,7 @@ const UserForm: React.FC<UserFormProps> = ({
                 htmlFor="role"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Rol
+                {t('users.role')}
               </label>
               <div className="mt-2">
                 <select
@@ -330,11 +335,11 @@ const UserForm: React.FC<UserFormProps> = ({
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 >
-                  <option value="">Selecciona un rol</option>
-                  <option value="administrador">Administrador</option>
-                  <option value="gestor">Gestor</option>
-                  <option value="tecnico">Técnico</option>
-                  <option value="cliente">Cliente</option>
+                  <option value="">{t('users.selectRole')}</option>
+                  <option value="administrador">{t('users.admin')}</option>
+                  <option value="gestor">{t('users.manager')}</option>
+                  <option value="tecnico">{t('users.technician')}</option>
+                  <option value="cliente">{t('users.client')}</option>
                 </select>
               </div>
             </div>
@@ -344,7 +349,7 @@ const UserForm: React.FC<UserFormProps> = ({
                 htmlFor="active"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Activo
+                {t('users.active')}
               </label>
               <div className="mt-2">
                 <input
@@ -366,13 +371,13 @@ const UserForm: React.FC<UserFormProps> = ({
           onClick={onClose}
           className="text-sm font-semibold leading-6 text-gray-900"
         >
-          Cancelar
+          {t('cancel')}
         </button>
         <button
           type="submit"
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Guardar
+          {t('save')}
         </button>
       </div>
     </form>

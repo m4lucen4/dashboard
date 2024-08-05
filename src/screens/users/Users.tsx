@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { RootState, AppDispatch } from '../../redux/store'
 import { createUser, fetchUsers, editUser } from '../../redux/slices/usersSlice'
 import UsersList from './components/UsersList'
@@ -12,6 +13,7 @@ import ListHeader from '../../components/ListHeader/ListHeader'
 
 const Users: React.FC = () => {
   const dispatch: AppDispatch = useDispatch()
+  const { t } = useTranslation()
   const { users, createUserRequest, editUserRequest, fetchUserRequest } =
     useSelector((state: RootState) => state.users)
 
@@ -62,15 +64,15 @@ const Users: React.FC = () => {
         <Alert message={editUserRequest.messages} />
       )}
       <ListHeader
-        title="Usuarios"
-        buttonLabel="Añadir usuario"
+        title={t('users.title')}
+        buttonLabel={t('users.addUser')}
         onOpen={() => setOpen(true)}
         onSearch={setSearchTerm}
       />
       <UsersList users={filteredUsers} onEdit={handleOpenEditForm} />
       <Drawer
         open={open}
-        title={editingUser ? 'Editar usuario' : 'Añadir usuario'}
+        title={editingUser ? t('users.editUser') : t('users.addUser')}
         onClose={handleCloseDrawer}
         fullScreen
       >

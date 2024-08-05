@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { User } from '../../../types'
+import { useTranslation } from 'react-i18next'
+
 import { PencilIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
 import Pagination from '../../../components/Pagination/Pagination'
 import { formatDate } from '../../../helpers/formatDate'
+
+import { User } from '../../../types'
 
 type UsersListProps = {
   users: User[]
@@ -10,6 +13,7 @@ type UsersListProps = {
 }
 
 const UsersList: React.FC<UsersListProps> = ({ users, onEdit }) => {
+  const { t } = useTranslation()
   const [currentPage, setCurrentPage] = useState(1)
   const [currentUsers, setCurrentUsers] = useState<User[]>([])
   const [selectedRole, setSelectedRole] = useState<string>('TODOS')
@@ -65,11 +69,11 @@ const UsersList: React.FC<UsersListProps> = ({ users, onEdit }) => {
               }}
               className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
-              <option value="TODOS">Todos</option>
-              <option value="cliente">Cliente</option>
-              <option value="tecnico">Técnico</option>
-              <option value="gestor">Gestor</option>
-              <option value="administrador">Administrador</option>
+              <option value="TODOS">{t('users.all')}</option>
+              <option value="cliente">{t('users.client')}</option>
+              <option value="tecnico">{t('users.technician')}</option>
+              <option value="gestor">{t('users.manager')}</option>
+              <option value="administrador">{t('users.admin')}</option>
             </select>
           </div>
           <table className="min-w-full divide-y divide-gray-300 border border-gray-300">
@@ -79,49 +83,49 @@ const UsersList: React.FC<UsersListProps> = ({ users, onEdit }) => {
                   scope="col"
                   className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-1"
                 >
-                  Alta
+                  {t('users.createdAt')}
                 </th>
                 <th
                   scope="col"
                   className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-1"
                 >
-                  Email
+                  {t('users.email')}
                 </th>
                 <th
                   scope="col"
                   className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-0"
                 >
-                  Nombre
+                  {t('users.firstName')}
                 </th>
                 <th
                   scope="col"
                   className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-0"
                 >
-                  Apellidos
+                  {t('users.lastName')}
                 </th>
                 <th
                   scope="col"
                   className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-0"
                 >
-                  Documento
+                  {t('users.document')}
                 </th>
                 <th
                   scope="col"
                   className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-0"
                 >
-                  Teléfono
+                  {t('users.phone')}
                 </th>
                 <th
                   scope="col"
                   className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-0"
                 >
-                  Rol
+                  {t('users.role')}
                 </th>
                 <th
                   scope="col"
                   className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-0"
                 >
-                  Acciones
+                  {t('users.actions')}
                 </th>
               </tr>
             </thead>
@@ -135,7 +139,9 @@ const UsersList: React.FC<UsersListProps> = ({ users, onEdit }) => {
                     <div>
                       {user.email}
                       {!user.active && (
-                        <div className="text-red-500">(INACTIVO)</div>
+                        <div className="text-red-500">
+                          ({t('users.disabled')})
+                        </div>
                       )}
                     </div>
                   </td>
@@ -174,7 +180,8 @@ const UsersList: React.FC<UsersListProps> = ({ users, onEdit }) => {
           </table>
           <div className="mt-4 flex justify-end">
             <span className="text-sm font-medium text-gray-700">
-              Total registros: {filterUsersByRole(users, selectedRole).length}
+              {t('users.totalRegisters')}{' '}
+              {filterUsersByRole(users, selectedRole).length}
             </span>
           </div>
           {totalPages > 1 ? (

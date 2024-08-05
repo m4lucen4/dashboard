@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 type ListHeaderProps = {
   title: string
@@ -13,6 +14,7 @@ const ListHeader: React.FC<ListHeaderProps> = ({
   onOpen,
   onSearch,
 }) => {
+  const { t } = useTranslation()
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +41,7 @@ const ListHeader: React.FC<ListHeaderProps> = ({
         <div className="flex items-center space-x-2">
           <input
             type="text"
-            placeholder="Buscar"
+            placeholder={t('search')}
             value={searchTerm}
             onChange={handleSearchChange}
             className="rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
@@ -49,7 +51,7 @@ const ListHeader: React.FC<ListHeaderProps> = ({
             onClick={handleClearSearch}
             className="rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-300"
           >
-            Limpiar
+            {t('clear')}
           </button>
         </div>
         <button
