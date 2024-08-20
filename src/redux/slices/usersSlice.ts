@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { db, auth } from '../../firebase'
+import { db, auth } from '@/firebase'
 import {
   collection,
   getDocs,
@@ -10,7 +10,7 @@ import {
   getDoc,
 } from 'firebase/firestore'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { IRequest, User } from '../../types'
+import { IRequest, User } from '@/types'
 
 interface UsersState {
   users: User[]

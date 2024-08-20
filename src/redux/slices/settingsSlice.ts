@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import { db } from '../../firebase'
+import { db } from '@/firebase'
 import { doc, setDoc, getDoc } from 'firebase/firestore'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { IRequest } from '../../types'
+import { IRequest } from '@/types'
 
 interface SettingsState {
   logoUrl: string

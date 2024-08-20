@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState, AppDispatch } from '../../redux/store'
-import Drawer from '../../components/Drawer/Drawer'
-import Alert from '../../components/Alert/Alert'
+import { RootState, AppDispatch } from '@/redux/store'
+import Drawer from '@/components/Drawer/Drawer'
+import Alert from '@/components/Alert/Alert'
 import {
   addCategory,
   deleteCategory,
   updateCategory,
-} from '../../redux/slices/categoriesSlice'
-import { CategoryItem } from '../../types'
-import Loading from '../../components/Loading/Loading'
+} from '@/redux/slices/categoriesSlice'
+import { CategoryItem } from '@/types'
+import Loading from '@/components/Loading/Loading'
 import CategoryList from './components/CategoryList'
-import { fetchCategories } from '../../redux/slices/categoriesSlice'
+import { fetchCategories } from '@/redux/slices/categoriesSlice'
 import CategoryForm from './components/CategoryForm'
-import ListHeader from '../../components/ListHeader/ListHeader'
-import { fetchInventory } from '../../redux/slices/inventorySlice'
-import Modal from '../../components/Modal/Modal'
+import ListHeader from '@/components/ListHeader/ListHeader'
+import { fetchInventory } from '@/redux/slices/inventorySlice'
+import Modal from '@/components/Modal/Modal'
 
 const Category: React.FC = () => {
   const dispatch: AppDispatch = useDispatch()

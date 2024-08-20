@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../../../redux/store'
-import { CategoryItem, InventoryItem, SpecialPrice } from '../../../types'
+import { RootState } from '@/redux/store'
+import { CategoryItem, InventoryItem, SpecialPrice } from '@/types'
 import {
   resetAddInventoryItemRequest,
   resetUpdateInventoryItemRequest,
-} from '../../../redux/slices/inventorySlice'
-import ActionButtonsForm from '../../../components/ActionButtonsForm/ActionButtonsForm'
+} from '@/redux/slices/inventorySlice'
+import ActionButtonsForm from '@/components/ActionButtonsForm/ActionButtonsForm'
 import UploadPdf from './UploadPdf'
 import UploadImages from './UploadImages'
 import SpecialPriceInput from './SpecialPrice'

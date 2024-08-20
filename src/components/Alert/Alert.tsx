@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
-import { getFriendlyErrorMessage } from '../../helpers/errors'
+import { getFriendlyErrorMessage } from '@/helpers/errors'
 
 type AlertProps = {
   message: string

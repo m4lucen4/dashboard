@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { RootState } from '../../../redux/store'
+import { RootState } from '@/redux/store'
 import {
   resetCreateUserRequest,
   resetEditUserRequest,
-} from '../../../redux/slices/usersSlice'
+} from '@/redux/slices/usersSlice'
 
-import { User } from '../../../types'
+import { User } from '@/types'
 
 interface UserFormProps {
   onSubmit: (user: User) => void

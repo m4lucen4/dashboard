@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { RootState, AppDispatch } from '../../redux/store'
-import { createUser, fetchUsers, editUser } from '../../redux/slices/usersSlice'
+import { RootState, AppDispatch } from '@/redux/store'
+import { createUser, fetchUsers, editUser } from '@/redux/slices/usersSlice'
 import UsersList from './components/UsersList'
 import UserForm from './components/UserForm'
-import Drawer from '../../components/Drawer/Drawer'
-import Alert from '../../components/Alert/Alert'
-import { User } from '../../types'
-import Loading from '../../components/Loading/Loading'
-import ListHeader from '../../components/ListHeader/ListHeader'
+import Drawer from '@/components/Drawer/Drawer'
+import Alert from '@/components/Alert/Alert'
+import { User } from '@/types'
+import Loading from '@/components/Loading/Loading'
+import ListHeader from '@/components/ListHeader/ListHeader'
 
 const Users: React.FC = () => {
   const dispatch: AppDispatch = useDispatch()

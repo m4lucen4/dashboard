@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { AppDispatch, RootState } from '../../../redux/store'
-import { logout } from '../../../redux/slices/authSlice'
-import Modal from '../../Modal/Modal'
-import { User } from '../../../types'
+import { AppDispatch, RootState } from '@/redux/store'
+import { logout } from '@/redux/slices/authSlice'
+import Modal from '@/components/Modal/Modal'
+import { User } from '@/types'
 
 const getRandomColor = () => {
   const colors = [

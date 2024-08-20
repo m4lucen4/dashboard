@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { CategoryItem, InventoryItem } from '../../../types'
+import { CategoryItem, InventoryItem } from '@/types'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
-import Pagination from '../../../components/Pagination/Pagination'
+import Pagination from '@/components/Pagination/Pagination'
 
 type CategoriesListProps = {
   categories: CategoryItem[]

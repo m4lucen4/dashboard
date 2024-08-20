@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AppDispatch } from '../../../redux/store'
-import { loginUser } from '../../../redux/slices/authSlice'
+import { AppDispatch } from '@/redux/store'
+import { loginUser } from '@/redux/slices/authSlice'
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('')

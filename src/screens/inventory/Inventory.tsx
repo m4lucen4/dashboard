@@ -1,22 +1,22 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { RootState, AppDispatch } from '../../redux/store'
-import Drawer from '../../components/Drawer/Drawer'
-import Alert from '../../components/Alert/Alert'
+import { RootState, AppDispatch } from '@/redux/store'
+import Drawer from '@/components/Drawer/Drawer'
+import Alert from '@/components/Alert/Alert'
 import {
   addInventoryItem,
   deleteInventoryItem,
   fetchInventory,
   updateInventoryItem,
-} from '../../redux/slices/inventorySlice'
+} from '@/redux/slices/inventorySlice'
 import InventoryList from './components/InventoryList'
-import { InventoryItem } from '../../types'
+import { InventoryItem } from '@/types'
 import InventoryForm from './components/InventoryForm'
-import Loading from '../../components/Loading/Loading'
-import ListHeader from '../../components/ListHeader/ListHeader'
-import Modal from '../../components/Modal/Modal'
-import { fetchCategories } from '../../redux/slices/categoriesSlice'
+import Loading from '@/components/Loading/Loading'
+import ListHeader from '@/components/ListHeader/ListHeader'
+import Modal from '@/components/Modal/Modal'
+import { fetchCategories } from '@/redux/slices/categoriesSlice'
 
 const Inventory: React.FC = () => {
   const dispatch: AppDispatch = useDispatch()

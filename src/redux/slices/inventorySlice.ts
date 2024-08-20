@@ -7,14 +7,14 @@ import {
   deleteDoc,
   doc,
 } from 'firebase/firestore'
-import { db } from '../../firebase'
-import { InventoryItem, IRequest } from '../../types'
+import { db } from '@/firebase'
+import { InventoryItem, IRequest } from '@/types'
 import {
   uploadImages,
   deleteImages,
   uploadPDF,
   deletePDF,
-} from '../../helpers/uploadStorage'
+} from '@/helpers/uploadStorage'
 
 interface InventoryState {
   items: InventoryItem[]

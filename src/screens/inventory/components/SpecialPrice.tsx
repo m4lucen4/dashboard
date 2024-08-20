@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
-import { weekdaysNames } from '../../../constants/index'
+import { weekdaysNames } from '@/constants/index'
 
 type SpecialPriceInputProps = {
   onAdd: (dates: string[], price: number) => void

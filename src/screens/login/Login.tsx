@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import LoginForm from './components/LoginForm'
-import { RootState } from '../../redux/store'
-import Alert from '../../components/Alert/Alert'
+import { RootState } from '@/redux/store'
+import Alert from '@/components/Alert/Alert'
 
 const Login: React.FC = () => {
   const isAuthenticated = useSelector(

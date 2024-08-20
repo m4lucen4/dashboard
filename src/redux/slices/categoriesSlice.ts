@@ -7,8 +7,8 @@ import {
   deleteDoc,
   doc,
 } from 'firebase/firestore'
-import { db } from '../../firebase'
-import { CategoryItem, IRequest } from '../../types'
+import { db } from '@/firebase'
+import { CategoryItem, IRequest } from '@/types'
 
 interface CategoryState {
   categories: CategoryItem[]

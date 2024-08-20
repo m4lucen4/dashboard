@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { PencilIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
-import Pagination from '../../../components/Pagination/Pagination'
-import { formatDate } from '../../../helpers/formatDate'
+import Pagination from '@/components/Pagination/Pagination'
+import { formatDate } from '@/helpers/formatDate'
 
-import { User } from '../../../types'
+import { User } from '@/types'
 
 type UsersListProps = {
   users: User[]

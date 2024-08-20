@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../../../redux/store'
+import { RootState } from '@/redux/store'
 import {
   resetAddCategoryRequest,
   resetUpdateCategoryRequest,
-} from '../../../redux/slices/categoriesSlice'
-import { CategoryItem } from '../../../types'
-import ActionButtonsForm from '../../../components/ActionButtonsForm/ActionButtonsForm'
+} from '@/redux/slices/categoriesSlice'
+import { CategoryItem } from '@/types'
+import ActionButtonsForm from '@/components/ActionButtonsForm/ActionButtonsForm'
 
 interface CategoryFormProps {
   onSubmit: (category: CategoryItem) => void

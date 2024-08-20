@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState, AppDispatch } from '../../redux/store'
+import { RootState, AppDispatch } from '@/redux/store'
 
-import Loading from '../../components/Loading/Loading'
-import { fetchInventory } from '../../redux/slices/inventorySlice'
+import Loading from '@/components/Loading/Loading'
+import { fetchInventory } from '@/redux/slices/inventorySlice'
 import Carousel from './components/Carousel'
 
 const Shop: React.FC = () => {

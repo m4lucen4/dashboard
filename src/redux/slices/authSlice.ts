@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { auth, db } from '../../firebase'
+import { auth, db } from '@/firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
-import { IRequest, CurrentUser } from '../../types'
+import { IRequest, CurrentUser } from '@/types'
 
 interface AuthState {
   authenticated: boolean
