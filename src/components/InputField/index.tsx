@@ -4,7 +4,7 @@ interface InputFieldProps {
   label: string
   name: string
   type?: string
-  value: string | number
+  value: string | number | undefined
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   disabled?: boolean
 }
