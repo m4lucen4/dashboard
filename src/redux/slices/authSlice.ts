@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { auth, db } from '@/firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { IRequest, CurrentUser } from '@/types'
 
 interface AuthState {
@@ -9,6 +9,7 @@ interface AuthState {
   currentUser: CurrentUser | null
   token: string | null
   loginUserRequest: IRequest
+  updateUserRequest: IRequest
 }
 
 const initialState: AuthState = {
@@ -16,6 +17,7 @@ const initialState: AuthState = {
   currentUser: null,
   token: null,
   loginUserRequest: { inProgress: false, messages: '', ok: false },
+  updateUserRequest: { inProgress: false, messages: '', ok: false },
 }
 
 export const loginUser = createAsyncThunk(
@@ -55,6 +57,28 @@ export const loginUser = createAsyncThunk(
       }
 
       return { currentUser, token }
+    } catch (error) {
+      const err = error as Error
+      return rejectWithValue(err.message)
+    }
+  }
+)
+
+export const updateCurrentUser = createAsyncThunk(
+  'auth/updateCurrentUser',
+  async (userData: Partial<CurrentUser>, { getState, rejectWithValue }) => {
+    try {
+      const state = getState() as { auth: AuthState }
+      const { currentUser } = state.auth
+
+      if (!currentUser) {
+        throw new Error('No hay usuario autenticado')
+      }
+
+      const userRef = doc(db, 'users', currentUser.uid)
+      await updateDoc(userRef, userData)
+
+      return { ...currentUser, ...userData }
     } catch (error) {
       const err = error as Error
       return rejectWithValue(err.message)
@@ -129,6 +153,20 @@ const authSlice = createSlice({
         state.currentUser = null
         state.token = null
         state.loginUserRequest = {
+          inProgress: false,
+          messages: action.payload as string,
+          ok: false,
+        }
+      })
+      .addCase(updateCurrentUser.pending, (state) => {
+        state.updateUserRequest = { inProgress: true, messages: '', ok: false }
+      })
+      .addCase(updateCurrentUser.fulfilled, (state, action) => {
+        state.currentUser = action.payload
+        state.updateUserRequest = { inProgress: false, messages: '', ok: true }
+      })
+      .addCase(updateCurrentUser.rejected, (state, action) => {
+        state.updateUserRequest = {
           inProgress: false,
           messages: action.payload as string,
           ok: false,

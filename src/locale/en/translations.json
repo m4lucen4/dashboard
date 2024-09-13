@@ -8,9 +8,12 @@
   },
   "profile": {
     "title": "Profile",
-    "name": "Name",
+    "firstName": "First Name",
+    "lastName": "Last Name",
     "email": "Email",
     "phone": "Phone",
+    "phone2": "Phone 2",
+    "document": "Document",
     "language": "Language"
   },
   "users": {

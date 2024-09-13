@@ -8,7 +8,8 @@
   },
   "profile": {
     "title": "Perfil",
-    "name": "Nombre",
+    "firstName": "Nombre",
+    "lastName": "Apellidos",
     "email": "Email",
     "phone": "Teléfono",
     "phone2": "Teléfono 2",
@@ -30,6 +31,7 @@
     "province": "Provincia",
     "city": "Ciudad",
     "cp": "Código Postal",
+    "password": "Contraseña",
     "selectRole": "Selecciona rol",
     "active": "Activo",
     "role": "Rol",
