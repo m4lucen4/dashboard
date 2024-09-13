@@ -7,6 +7,7 @@ interface InputFieldProps {
   value: string | number | undefined
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   disabled?: boolean
+  width?: '50%' | '100%' | '33%' | '25%'
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -16,9 +17,16 @@ const InputField: React.FC<InputFieldProps> = ({
   value,
   onChange,
   disabled = false,
+  width = '50%',
 }) => {
+  const widthClasses = {
+    '100%': 'col-span-6',
+    '50%': 'col-span-6 sm:col-span-3',
+    '33%': 'col-span-6 sm:col-span-2',
+    '25%': 'col-span-6 sm:col-span-1',
+  }
   return (
-    <div className="col-span-6 sm:col-span-3">
+    <div className={widthClasses[width]}>
       <label className="block text-sm font-medium text-gray-700">{label}</label>
       <input
         type={type}
