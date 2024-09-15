@@ -10,11 +10,17 @@
     "title": "Profile",
     "firstName": "First Name",
     "lastName": "Last Name",
+    "address": "Address",
+    "postalCode": "Postal Code",
+    "city": "City",
+    "province": "Province",
     "email": "Email",
     "phone": "Phone",
     "phone2": "Phone 2",
     "document": "Document",
-    "language": "Language"
+    "language": "Language",
+    "confirmEditTitle": "Confirm edit",
+    "confirmEditDescription": "Are you sure you want to save the changes?"
   },
   "users": {
     "title": "Users",
@@ -52,5 +58,6 @@
   "search": "Search",
   "clear": "Clear",
   "save": "Save",
+  "edit": "Edit",
   "cancel": "Cancel"
 }

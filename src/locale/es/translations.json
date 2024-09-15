@@ -10,11 +10,17 @@
     "title": "Perfil",
     "firstName": "Nombre",
     "lastName": "Apellidos",
+    "address": "Dirección",
+    "postalCode": "Código Postal",
+    "city": "Ciudad",
+    "province": "Provincia",
     "email": "Email",
     "phone": "Teléfono",
     "phone2": "Teléfono 2",
     "document": "Documento",
-    "language": "Idioma"
+    "language": "Idioma",
+    "confirmEditTitle": "Confirmar edición",
+    "confirmEditDescription": "¿Estás seguro de que deseas guardar los cambios?"
   },
   "users": {
     "title": "Usuarios",
@@ -45,7 +51,9 @@
     "admin": "Administrador"
   },
   "inventory": "Inventario",
+  "edit": "Editar",
   "save": "Guardar",
+  "cancel": "Cancelar",
   "addItem": "Añadir artículo",
   "editItem": "Editar artículo",
   "next": "Siguiente",

@@ -6,6 +6,7 @@ interface SelectFieldProps {
   value: string
   options: { value: string; label: string }[]
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
+  disabled?: boolean
 }
 
 const SelectField: React.FC<SelectFieldProps> = ({
@@ -13,6 +14,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   name,
   value,
   options,
+  disabled = false,
   onChange,
 }) => {
   return (
@@ -22,6 +24,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
         name={name}
         value={value}
         onChange={onChange}
+        disabled={disabled}
         className="mt-1 block w-full rounded-md border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
       >
         {options.map((option) => (

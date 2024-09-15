@@ -7,7 +7,7 @@ interface InputFieldProps {
   value: string | number | undefined
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   disabled?: boolean
-  width?: '50%' | '100%' | '33%' | '25%'
+  width?: '100%' | '50%' | '33%' | '25%'
 }
 
 const InputField: React.FC<InputFieldProps> = ({

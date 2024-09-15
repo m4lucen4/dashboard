@@ -6,14 +6,20 @@ import { RootState } from '../../redux/store'
 import { User } from '../../types'
 import { AppDispatch } from '@/redux/store'
 import { updateCurrentUser } from '@/redux/slices/authSlice'
-import InputField from '@/components/InputField'
-import SelectField from '@/components/SelectField'
+import Alert from '@/components/Alert/Alert'
+import Modal from '@/components/Modal/Modal'
+import ProfileForm from './components/ProfileForm'
 
 const Profile: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { t, i18n } = useTranslation()
-  const currentUser = useSelector(
-    (state: RootState) => state.auth.currentUser as User
+  const [isEditing, setIsEditing] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const { currentUser, updateUserRequest } = useSelector(
+    (state: RootState) => ({
+      currentUser: state.auth.currentUser as User,
+      updateUserRequest: state.auth.updateUserRequest,
+    })
   )
 
   const [formData, setFormData] = useState<User>({ ...currentUser })
@@ -37,82 +43,84 @@ const Profile: React.FC = () => {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleEditClick = () => {
+    setIsEditing(true)
+  }
+
+  const handleCancelEdit = () => {
+    setFormData({ ...currentUser })
+    setIsEditing(false)
+  }
+
+  const handleConfirmEdit = () => {
+    setShowModal(true)
+  }
+
+  const handleModalConfirm = () => {
     dispatch(updateCurrentUser(formData))
+    setIsEditing(false)
+    setShowModal(false)
+  }
+
+  const handleModalClose = () => {
+    setShowModal(false)
   }
 
   return (
     <div className="mx-auto mb-8 mt-8 max-w-7xl px-4 sm:px-6 lg:px-8">
+      {updateUserRequest.messages.length > 0 && (
+        <Alert message={updateUserRequest.messages} />
+      )}
       <div className="bg-white shadow sm:rounded-lg">
         <div className="px-6 py-8">
-          <h3 className="text-lg font-medium text-gray-900">
+          <h3 className="text-2xl font-medium text-gray-900">
             {t('profile.title')}
           </h3>
-          <form onSubmit={handleSubmit} className="mt-6">
-            <div className="grid grid-cols-6 gap-6">
-              <InputField
-                label={t('profile.firstName')}
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-              />
-              <InputField
-                label={t('profile.lastName')}
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-              />
-              <InputField
-                label={t('profile.document')}
-                name="document"
-                value={formData.document}
-                onChange={handleChange}
-              />
-              <InputField
-                label={t('profile.email')}
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                disabled
-              />
-              <InputField
-                label={t('profile.phone')}
-                name="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={handleChange}
-              />
-              <InputField
-                label={t('profile.phone2')}
-                name="phone2"
-                type="tel"
-                value={formData.phone2}
-                onChange={handleChange}
-              />
-              <SelectField
-                label={t('profile.language')}
-                name="language"
-                value={formData.language}
-                onChange={handleChange}
-                options={[
-                  { value: 'es-ES', label: 'Español' },
-                  { value: 'en-EN', label: 'English' },
-                ]}
-              />
-            </div>
+          <form onSubmit={(e) => e.preventDefault()} className="mt-6">
+            <ProfileForm
+              formData={formData}
+              isEditing={isEditing}
+              handleChange={handleChange}
+            />
             <div className="mt-8">
-              <button
-                type="submit"
-                className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:w-auto"
-              >
-                {t('save')}
-              </button>
+              {!isEditing ? (
+                <button
+                  type="button"
+                  onClick={handleEditClick}
+                  className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  {t('edit')}
+                </button>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleConfirmEdit}
+                    className="mr-2 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    {t('save')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCancelEdit}
+                    className="rounded-md bg-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+                  >
+                    {t('cancel')}
+                  </button>
+                </>
+              )}
             </div>
           </form>
         </div>
       </div>
+      <Modal
+        confirmButton={t('save')}
+        description={t('profile.confirmEditDescription')}
+        title={t('profile.confirmEditTitle')}
+        isOpen={showModal}
+        onClose={handleModalClose}
+        onConfirm={handleModalConfirm}
+      />
     </div>
   )
 }
